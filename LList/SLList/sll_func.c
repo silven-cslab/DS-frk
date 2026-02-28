@@ -38,9 +38,9 @@ int display(void);
 /* ---- Main Function ---- */
 int main()
 {
-	create();
+	if(create()) return 1;
 	init();
-	display();
+	if(display()) return 1;
 
 	return 0;
 }
@@ -90,7 +90,6 @@ int init(void)
 	int i;
 	header = N;		//Now the header points to the first node.
 	
-
 	printf("\nEnter the values for the %d nodes: ", n);
 	for(i=0;i<n;i++)
 	{
@@ -118,6 +117,12 @@ int display(void)
 {
 	int i;
 	
+	if(header -> next == NULL)
+	{
+		printf("\nThe list is empty can't access any data.\n");		//Handling edge case.
+		return 1;
+	}
+
 	printf("\nThe data in all of the nodes is: \n");
 	for(i=0;i<n;i++)
 	{
