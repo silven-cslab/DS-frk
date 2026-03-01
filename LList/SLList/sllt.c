@@ -21,7 +21,7 @@ struct node {
 	struct node *next;
 };
 
-struct node *header = NULL, *N = NULL;		//Declaring here for the global access.
+struct node header, *N = NULL;		//Declaring here for the global access.
 int n;
 
 
@@ -40,6 +40,10 @@ int main()
 	display();		//Display the node.
 	if(traverse()) return 1;	//Find a node by traversing through the list.
 	
+	//Free the allocated memory:
+	free(N);
+	N = NULL;
+
 	return 0;
 }
 
@@ -55,7 +59,6 @@ int create(void)
 	scanf("%d", &n);
 
 	//Allocating the memory for the nodes:
-	header = malloc(sizeof(struct node *));
 	N = malloc(n * sizeof(struct node *));
 
 	if(n < 1)
@@ -64,7 +67,7 @@ int create(void)
 		return 1;
 	}
 
-	if(header == NULL || N == NULL)
+	if(N == NULL)
 	{
 		printf("\nMemory allocation failed!!\n");		//Checking if memory allocation failed.
 		return 1;
@@ -83,7 +86,7 @@ int init(void)
 {
 	int i;
 
-	header = N;		//Now header points to the first node.
+	header.next = N;		//Now header points to the first node.
 
 	//Now taking all of the values from the user:
 	printf("\nEnter the node's data values: ");
@@ -139,7 +142,7 @@ int traverse(void)
 		return 1;
 	}
 
-	temp = header;
+	temp = header.next;
 
 	while(temp -> next != NULL && i < pos)
 	{
