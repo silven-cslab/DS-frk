@@ -24,7 +24,7 @@ struct node {
 
 
 /* -- Global Variables Declaration: -- */
-struct node *header, *N; 		//Declaring here for global access.
+struct node header, *N = NULL; 		//Declaring here for global access.
 int n;
 
 
@@ -41,6 +41,10 @@ int main()
 	if(create()) return 1;
 	init();
 	if(display()) return 1;
+	
+	//Free the allocated memory:
+	free(N);
+	N = NULL;
 
 	return 0;
 }
@@ -53,10 +57,6 @@ int main()
 //This function allocates the memory for required number of the nodes in the list.
 int create(void)
 {
-
-	//Allocating memory for header pointer:
-	header = malloc(sizeof(struct node *));
-
 	printf("\nEnter how many nodes you want in the list: ");
 	scanf("%d", &n);
 
@@ -70,7 +70,7 @@ int create(void)
 	N = malloc(n * sizeof(struct node *));
 
 
-	if(header == NULL || N == NULL)
+	if(N == NULL)
 	{
 		printf("\nMemory allocation failed!!\n\n");
 		return 1;					//Checking for memory allocation fails.
@@ -88,7 +88,7 @@ int create(void)
 int init(void)
 {
 	int i;
-	header = N;		//Now the header points to the first node.
+	header.next = N;		//Now the header points to the first node.
 	
 	printf("\nEnter the values for the %d nodes: ", n);
 	for(i=0;i<n;i++)
@@ -117,7 +117,7 @@ int display(void)
 {
 	int i;
 	
-	if(header -> next == NULL)
+	if(header.next == NULL)
 	{
 		printf("\nThe list is empty can't access any data.\n");		//Handling edge case.
 		return 1;
