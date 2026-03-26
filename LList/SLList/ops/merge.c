@@ -37,19 +37,28 @@ int merge(struct node *, struct node *);
 /** ===== Main Function ===== **/
 int main()
 {
+	//Allocating memory for header nodes:
+	header1 = malloc(sizeof(struct node));
+	header2 = malloc(sizeof(struct node));
+	header3 = malloc(sizeof(struct node));
+
+	
 	//First list:
+	printf("\nThe first list: \n");
 	create(&N1);
 	n1 = size;
 	init(header1, N1, n1);
 	display(header1);
 
 	//Second List:
-	create(&N1);
+	printf("\nThe second list: \n");
+	create(&N2);
 	n2 = size;
 	init(header2, N2, n2);
 	display(header2);
 
 	//Merging:
+	printf("\nThe merged list: \n");
 	merge(header1, header2);
 	display(header3);		//Display the merged list.
 
