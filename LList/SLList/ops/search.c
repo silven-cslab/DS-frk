@@ -45,6 +45,9 @@ int main()
 	if(display()) return 1;
 	search();
 
+	//Free memory:
+	free(N); N = NULL;
+
 	return 0;
 }
 

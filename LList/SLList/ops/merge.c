@@ -62,6 +62,14 @@ int main()
 	merge(header1, header2);
 	display(header3);		//Display the merged list.
 
+	//Free the memory:
+	free(header1); header1 = NULL;
+	free(header2); header2 = NULL;
+	free(header3); header3 = NULL;
+
+	free(N1); N1 = NULL;
+	free(N2); N2 = NULL;
+
 	return 0;	//Exit Status.
 }
 

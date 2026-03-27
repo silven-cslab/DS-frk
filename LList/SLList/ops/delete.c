@@ -46,6 +46,9 @@ int main()
 	if(display()) return 1;
 	if(deleteMain()) return 1;
 
+	//Free memory:
+	free(N); N = NULL;
+
 	return 0;
 }
 
