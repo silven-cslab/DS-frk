@@ -1,9 +1,9 @@
-/** ===== Single Linked List: Node Insertion Implementation ===== **/
+/** ===== Circular Single Linked List: Node Insertion Implementation ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the Node Insertion operation on a Single Linked List.
+ * This program shows the implementation of the Node Insertion operation on a Circular Single Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
@@ -102,7 +102,7 @@ int init()
 		scanf("%d", &((N+i) -> data));
 		if(i == n-1)
 		{
-			(N+i) -> next = NULL;
+			(N+i) -> next = header.next;
 			return 0;
 		}
 
@@ -131,12 +131,13 @@ int display()
 	struct node *temp = header.next;
 
 	//Traversing through every node and printing their data values.
-	while(temp != NULL)
+	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}
-	printf(" [ NULL ]");
+	}while(temp != header.next);
+
+	printf(" [ FIRST NODE ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 
@@ -193,7 +194,7 @@ int insertMain()
 
 int insertFront()
 {
-	struct node *temp;
+	struct node *temp = NULL;
 
 	temp = header.next;
 
@@ -202,6 +203,17 @@ int insertFront()
 
 	//Linking the list to the new node that is inserted at the front position.
 	new.next = temp;
+
+	//Traversing upto the last node to link the last node to the first one.
+	temp = header.next;
+
+	do
+	{
+		temp = temp -> next;
+	}while(temp -> next != new.next);
+	
+
+	temp -> next = header.next;
 
 	return 0;
 }
@@ -237,7 +249,7 @@ int insertPos()
 
 	temp = header.next;
 
-	while(temp != NULL && j < pos)
+	while(temp -> next != header.next && j < pos)
 	{
 		prev = temp;
 		temp = temp -> next;
@@ -262,20 +274,20 @@ int insertPos()
 
 int insertEnd()
 {
-	struct node *temp;
+	struct node *temp = NULL;
 
 	temp = header.next;
 
 
 	//Traversing till the last node:
-	while(temp -> next != NULL)
+	do 
 	{
 		temp = temp -> next;
-	}
+	}while(temp -> next != header.next);
 
 	//Inserting the node at the end:
 	temp -> next = &new;
-	new.next = NULL;
+	new.next = header.next;
 
 	return 0;
 		
