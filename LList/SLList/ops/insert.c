@@ -3,14 +3,14 @@
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the Node Insertion operation on a Single Linked List.
- * In this we do the following processes:
- 	* Creation of the List.
+* This program shows the implementation of the Node Insertion operation on a Single Linked List.
+* In this we do the following processes:
+	* Creation of the List.
 	* Initialization of the List with certain values.
 	* Display the List.
 	* Insertion of a new node at the front or middle(any position) or at the end of the list.
 	* Again, display the new list.
- * Thus, we finally insert a new node at the required position of the list.
+* Thus, we finally insert a new node at the required position of the list.
 */
 
 
@@ -48,9 +48,6 @@ int main()
 	printf("\nThe List is : ");
 	if(display()) return 1;
 	if(insertMain()) return 1;
-
-	//Free the memory:
-	free(N); N = NULL;
 
 	return 0;
 }
@@ -178,11 +175,9 @@ int insertMain()
 	}
 	else
 	{
-		printf("\nInvalid Option!!");
+		printf("\nIvalid Option!!\n");
 		return 1;
 	}
-	printf("\nSuccessfully inserted the node.\nThe list after the node insertion is: ");
-	display();
 
 	return 0;
 }
@@ -202,6 +197,9 @@ int insertFront()
 
 	//Linking the list to the new node that is inserted at the front position.
 	new.next = temp;
+
+	//Display the list after the insertion:
+	if(display())  return 1;
 
 	return 0;
 }
@@ -276,6 +274,9 @@ int insertEnd()
 	//Inserting the node at the end:
 	temp -> next = &new;
 	new.next = NULL;
+
+	//Display the new list:
+	if(display())  return 1;
 
 	return 0;
 		
