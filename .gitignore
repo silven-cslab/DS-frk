@@ -1,3 +1,4 @@
 
 # Ignore executables of the programs.
 **/exec/
+*.gitkeep
