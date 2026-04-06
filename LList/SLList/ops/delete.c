@@ -200,7 +200,7 @@ int deleteFront()
 	//If the list contains only one node:
 	if(temp -> next == NULL)
 	{
-		header.next == NULL;	
+		header.next = NULL;	
 		return 0;
 	}
 
