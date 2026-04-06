@@ -157,7 +157,7 @@ int modify()
 	scanf("%d", &newValue);
 
 	//Checking if position is out of bounds:
-	if(key < 1 || key >= n)
+	if(key < 0 || key >= n)
 	{	
 		printf("\nPosition of the node is out of bounds. Can't Access!!\n");
 		return 1;
@@ -167,7 +167,7 @@ int modify()
 	temp = header.next;
 
 	//Traversing through the entire list:
-	while(temp -> next != header.next)
+	do
 	{
 		if(i == key)		//Comparing the node with key.
 		{
@@ -177,7 +177,7 @@ int modify()
 		}
 		i += 1;
 		temp = temp -> next;
-	}	
+	}while(temp -> next != header.next);
 
 	printf("\nThe modified list is: \n");
 	if(display()) return 1;		//Display the modified list.

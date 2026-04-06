@@ -241,12 +241,12 @@ int deletePos()
 	struct node *temp = NULL, *prev = NULL;
 	temp = header.next;
 
-	while(temp != NULL && j < pos)
+	do
 	{
 		prev = temp;
 		temp = temp -> next;
 		j += 1;
-	}
+	}while(temp -> next != header.next && j < pos);
 
 	prev -> next = temp -> next;
 
