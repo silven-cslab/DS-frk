@@ -35,8 +35,9 @@ int n;
 
 
 /** ===== Function Prototypes ===== **/
-int create(struct node **, int);
-int init(struct node *, struct node *, int);
+struct node* createNode(int value);
+void createList(int n);
+void freeList(void);
 int display(struct node *);
 int insertMain(int);
 int insertFront(struct node *);
@@ -68,12 +69,25 @@ int main()
 	scanf("%d", &n);
 
 	printf("\nCreating the list......\n");
-	if(create(&header, 1))  return 1;
-	if(create(&N, n)) return 1;	
+	header = malloc(sizeof(struct node));
+	if(header == NULL)
+	{
+		printf("Memory allocation failed!\n");
+		return 1;
+	}
+	header->next = NULL;
+
 	printf("\nSuccessfully created the list.");
 	 	
 	printf("\nInitializing the list.....\n");
-	init(header, N, n);
+	printf("\nEnter the data of all of the nodes: ");
+	createList(n);
+	if(header->next == NULL)
+	{
+		printf("Failed to create list.\n");
+		free(header);
+		return 1;
+	}
 
 	do
 	{
@@ -146,15 +160,16 @@ int main()
 				{
 					printf("Invalid option. Try Again!!\n");
 				}
-		}
+			}
 
-		printf("\nDo you want to continue?(Y/n)\n");
-		scanf(" %c", &ch2);
-		
-	}while(ch2 == 'Y');
-	l:
+			printf("\nDo you want to continue?(Y/n)\n");
+			scanf(" %c", &ch2);
+
+		}while(ch2 == 'Y');
+		l:
 	
 	//free the allocated memory:
+	freeList();
 	free(header);  header = NULL;
 	free(N);  N = NULL;
 	
@@ -163,58 +178,87 @@ int main()
 
 
 /** ===== Function Definitions ===== **/
-//create():
-//This function allocates the memory for the nodes.
+//createNode():
+//This function allocates memory for a single node.
 
-int create(struct node **N, int size)
+struct node* createNode(int value)
 {
-	if(size < 1)
+	struct node *newNode = (struct node*)malloc(sizeof(struct node));
+
+	if(newNode == NULL)
 	{
-		printf("\nInsufficient nodes to create a list!!\n\n");		//Handling edge cases.
-		return 1;
+		printf("Memory allocation failed!\n");
+		return NULL;
 	}
 
-	//Allocating the memory for the n nodes.
-	*N = malloc(size * sizeof(struct node));
+	newNode->data = value;
+	newNode->next = NULL;
 
-	if(*N == NULL)
-	{
-		printf("\nMemory allocation failed!");		//Checking if memory allocation is done or not.
-		return 1;				
-	}
-
-	return 0;
+	return newNode;
 }
 
 
-//init():
-//This function initializes all of the nodes in the list with a certain values.
+//createList():
+//This function creates and initializes all nodes in the circular list.
 
-int init(struct node* header, struct node* N, int size)
+void createList(int n)
 {
-	int i = 0;
+	struct node *temp, *last = NULL;
 
-	//Linking header node to the N nodes.
-	header->next = &N[0];
-
-	//Taking the data of all the nodes.
-	printf("\nEnter the data of all of the nodes: ");
-	while(i < size)
+	for(int i = 0; i < n; i++)
 	{
-		scanf("%d", &((N+i) -> data));
-		if(i == size-1)
+		int val;
+		scanf("%d", &val);
+
+		struct node *newNode = createNode(val);
+
+		if(newNode == NULL)
 		{
-			(N+i) -> next = header -> next;
-			return 0;
+			freeList();
+			return;
 		}
 
-		(N+i) -> next = ((N+i)+1);
-		i += 1;
+		if(header->next == NULL)
+		{
+			header->next = newNode;
+			newNode->next = newNode; // circular
+		}
+		else
+		{
+			newNode->next = header->next;
+			last->next = newNode;
+		}
+
+		last = newNode;
+		temp = newNode;
+	}
+
+	if(temp != NULL)
+	{
+		temp->next = header->next;
 	}
 
 	printf("\nSuccessfully initialized all the nodes with data.\n\n");
+}
 
-	return 0;
+
+void freeList(void)
+{
+	if(header->next == NULL)
+	{
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
+	{
+		struct node *next = curr->next;
+		free(curr);
+		curr = next;
+	}
+	free(first);
+	header->next = NULL;
 }
 
 
@@ -255,13 +299,12 @@ int insertMain(int size)
 	struct node *newNode = NULL;
 	int choice1;
 
-	//Allocating memory for newNode:
-	newNode = malloc(sizeof(struct node));
-
 	//Creating the new node that is to be inserted:	
 	printf("\nEnter the data value of the new node that is to be inserted: ");
-	scanf("%d", &newNode -> data);
-	newNode -> next = NULL;
+	int newValue;
+	scanf("%d", &newValue);
+	newNode = createNode(newValue);
+	if(newNode == NULL) return 1;
 	printf("\nSuccessfully created the new node.\n");
 
 	//Taking the user's choice at which position should the node be inserted.
@@ -475,6 +518,7 @@ int deleteFront()
 	if(temp -> next == temp)
 	{
 		header -> next = NULL;	
+		free(temp);
 		return 0;
 	}
 
@@ -488,6 +532,7 @@ int deleteFront()
 
 	//Fix the circular link:
 	temp -> next = header -> next;
+	free(curr);
 
 	return 0;
 }
@@ -521,7 +566,14 @@ int deletePos()
 		j += 1;
 	}while(temp -> next != header -> next && j < pos);
 
+	if(pos < 0)
+	{
+		printf("\nPosition out of range.\n");
+		return 1;
+	}
+
 	prev -> next = temp -> next;
+	free(temp);
 
 	return 0;
 
@@ -547,6 +599,7 @@ int deleteEnd()
 	if(temp -> next == temp)
 	{
 		header -> next = NULL;
+		free(temp);
 		return 0;	
 	}
 
@@ -559,6 +612,7 @@ int deleteEnd()
 
 	//Deleting the link betwwen the n and n-1 node:
 	prev -> next = header -> next;
+	free(temp);
 
 	return 0;
 }
@@ -605,15 +659,23 @@ int mergeMain(void)
 	int n2;
 	
 	//Allocating the memory:
-	if(create(&header2, 1))  return 1;
+	header2 = malloc(sizeof(struct node));
+	if(header2 == NULL)
+	{
+		printf("Memory allocation failed!\n");
+		return 1;
+	}
+	header2->next = NULL;
 	
 	//Getting the second list:
 	printf("\nEnter the no. of nodes in the second list: ");
 	scanf("%d", &n2);
 	
-	//Allocating memory for all of the nodes in second list:
-	if(create(&N2, n2)) return 1;
-	init(header2, N2, n2);
+	printf("\nEnter the node values: ");
+	struct node *tempHeader = header;
+	header = header2;
+	createList(n2);
+	header = tempHeader;
 	
 	//Printing the first list:
 	printf("\nThe first list is: \n");
@@ -628,7 +690,6 @@ int mergeMain(void)
 	
 	//free the allocated memory:
 	free(header2);  header2 = NULL;
-	free(N2);  N2 = NULL;
 	
 	return 0;
 }
@@ -640,7 +701,13 @@ int merge(struct node *h1, struct node *h2)
 	struct node *header3 = NULL;
 
 	//Allocating memory:
-	if(create(&header3, 1))  return 1;
+	header3 = malloc(sizeof(struct node));
+	if(header3 == NULL)
+	{
+		printf("Memory allocation failed!\n");
+		return 1;
+	}
+	header3->next = NULL;
 
 	//Linking the first list to the header:
 	header3 -> next = h1 -> next;
