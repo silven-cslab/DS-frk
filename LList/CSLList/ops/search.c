@@ -19,13 +19,6 @@
 #include<stdlib.h>		//For DMA functions like malloc(), free(),....
 
 
-/** ===== Function Prototypes ===== **/
-int create(void);
-int init(void);
-int display(void);
-int search(void);
-
-
 /** ===== Global Declaration ===== **/
 /* ---- Node Definition ---- */
 struct node {
@@ -33,19 +26,30 @@ struct node {
 	struct node *next;
 };
 
-struct node header, *N = NULL, new;		//Declaraing here for global access.
+struct node *header = NULL, *N = NULL, new;		//Declaraing here for global access.
 int n;
+
+
+/** ===== Function Prototypes ===== **/
+int create(void);
+int init(void);
+int display(struct node *);
+int search(void);
+
 
 
 /** ===== Main Function ===== **/
 int main()
 {
+	header = malloc(sizeof(struct node));
+
 	if(create()) return 1;
 	init();
-	if(display()) return 1;
+	if(display(header)) return 1;
 	search();
 
 	//Free memory:
+	free(header);  header = NULL;
 	free(N); N = NULL;
 
 	return 0;
@@ -89,7 +93,7 @@ int init()
 	int i = 0;
 
 	//Linking header node to the N nodes.
-	header.next = &N[0];
+	header -> next = &N[0];
 
 	//Taking the data of all the nodes.
 	printf("\nEnter the data of all of the nodes: ");
@@ -98,7 +102,7 @@ int init()
 		scanf("%d", &((N+i) -> data));
 		if(i == n-1)
 		{
-			(N+i) -> next = header.next;
+			(N+i) -> next = header -> next;
 			return 0;
 		}
 
@@ -113,30 +117,29 @@ int init()
 
 
 //display():
-//This function displays all of the nodes and it's data.
+//This function displays all of the nodes of the list.
 
-int display()
+int display(struct node *head)
 {
 	//Checking the edge case:
-	if(header.next == NULL)
+	if(head -> next == NULL)
 	{
 		printf("\nThe list is empty!!\n\n");
 		return 1;
 	}
 
-	struct node *temp = header.next;
+	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
-	printf("\nThe List is:\n");
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
 	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}while(temp != header.next);
+	}while(temp != header -> next);
 
 	printf(" [ FIRST NODE ]");
-
-	printf("\nSuccessfully printed the list.\n\n");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
@@ -154,7 +157,7 @@ int search()
 	scanf("%d", &key);
 
 	struct node *temp = NULL;
-	temp = header.next;
+	temp = header -> next;
 
 	//Traversing through the entire list:
 	do
@@ -167,7 +170,7 @@ int search()
 		}
 		i += 1;
 		temp = temp -> next;
-	}while(temp != header.next);	
+	}while(temp != header -> next);	
 
 	printf("\nElement was not found.\n");
 	

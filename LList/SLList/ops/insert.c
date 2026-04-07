@@ -19,16 +19,6 @@
 #include<stdlib.h>		//For DMA functions like malloc(), free(),....
 
 
-/** ===== Function Prototypes ===== **/
-int create(void);
-int init(void);
-int display(void);
-int insertMain(void);
-int insertFront(void);
-int insertPos(void);
-int insertEnd(void);
-
-
 /** ===== Global Declaration ===== **/
 /* ---- Node Definition ---- */
 struct node {
@@ -36,18 +26,32 @@ struct node {
 	struct node *next;
 };
 
-struct node header, *N = NULL, new;		//Declaraing here for global access.
+struct node *header = NULL, *N = NULL, new;		//Declaraing here for global access.
 int n;
+
+
+/** ===== Function Prototypes ===== **/
+int create(void);
+int init(void);
+int display(struct node *);
+int insertMain(void);
+int insertFront(void);
+int insertPos(void);
+int insertEnd(void);
 
 
 /** ===== Main Function ===== **/
 int main()
 {
+	header = malloc(sizeof(struct node));
 	if(create()) return 1;
 	init();
 	printf("\nThe List is : ");
-	if(display()) return 1;
+	if(display(header)) return 1;
 	if(insertMain()) return 1;
+
+	//free the allocated memory:
+	free(header);  header = NULL;
 
 	return 0;
 }
@@ -90,7 +94,7 @@ int init()
 	int i = 0;
 
 	//Linking header node to the N nodes.
-	header.next = &N[0];
+	header -> next = &N[0];
 
 	//Taking the data of all the nodes.
 	printf("\nEnter the data of all of the nodes: ");
@@ -116,16 +120,16 @@ int init()
 //display():
 //This function displays all of the nodes and it's data.
 
-int display()
+int display(struct node *head)
 {
 	//Checking the edge case:
-	if(header.next == NULL)
+	if(head -> next == NULL)
 	{
 		printf("\nThe list is empty!!\n\n");
 		return 1;
 	}
 
-	struct node *temp = header.next;
+	struct node *temp = head -> next;
 
 	//Traversing through every node and printing their data values.
 	while(temp != NULL)
@@ -190,16 +194,16 @@ int insertFront()
 {
 	struct node *temp;
 
-	temp = header.next;
+	temp = header -> next;
 
 	//Linking the new node to the header node.
-	header.next = &new;
+	header -> next = &new;
 
 	//Linking the list to the new node that is inserted at the front position.
 	new.next = temp;
 
 	//Display the list after the insertion:
-	if(display())  return 1;
+	if(display(header))  return 1;
 
 	return 0;
 }
@@ -233,7 +237,7 @@ int insertPos()
 	
 	struct node *temp = NULL, *prev = NULL;
 
-	temp = header.next;
+	temp = header -> next;
 
 	while(temp != NULL && j < pos)
 	{
@@ -249,7 +253,7 @@ int insertPos()
 	new.next = temp;
 
 	//Display the modified list:
-	display();
+	if(display(header))  return 1;
 
 	return 0;
 }
@@ -262,7 +266,7 @@ int insertEnd()
 {
 	struct node *temp;
 
-	temp = header.next;
+	temp = header -> next;
 
 
 	//Traversing till the last node:
@@ -276,7 +280,7 @@ int insertEnd()
 	new.next = NULL;
 
 	//Display the new list:
-	if(display())  return 1;
+	if(display(header))  return 1;
 
 	return 0;
 		

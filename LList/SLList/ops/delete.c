@@ -24,14 +24,14 @@ struct node {
 	struct node *next;
 };
 
-struct node header, *N = NULL;		//Declaring here for global access.
+struct node *header = NULL, *N = NULL;		//Declaring here for global access.
 int n;
 
 
 /** ===== Function Prototypes ===== **/
 int create(void);
 int init(void);
-int display(void);
+int display(struct node *);
 int deleteMain(void);
 int deleteFront(void);
 int deletePos(void);
@@ -41,9 +41,10 @@ int deleteEnd(void);
 /** ===== Main Function ===== **/
 int main()
 {
+	header = malloc(sizeof(struct node));
 	if(create()) return 1;
 	init();
-	if(display()) return 1;
+	if(display(header)) return 1;
 	if(deleteMain()) return 1;
 
 	//Free memory:
@@ -91,7 +92,7 @@ int init()
 	int i = 0;
 
 	//Linking the first node to the header node:
-	header.next = &N[0];
+	header -> next = &N[0];
 	
 	//Taking the data values from the user:
 	printf("\nEnter all the values of the nodes in the list: ");
@@ -116,29 +117,28 @@ int init()
 
 
 //display():
-//This function displays all of the nodes of the list.
+//This function displays all of the nodes and it's data.
 
-int display()
+int display(struct node *head)
 {
-	//Checking if the list is empty:
-	if(header.next == NULL)
+	//Checking the edge case:
+	if(head -> next == NULL)
 	{
-		printf("\nThe list is empty!!\n");
+		printf("\nThe list is empty!!\n\n");
 		return 1;
 	}
 
-	struct node *temp = NULL;
-	temp = header.next;
+	struct node *temp = head -> next;
 
-	//Traversing through the list to print all the nodes:
-	printf("\nThe List is: \n");
+	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
 	}
 	printf(" [ NULL ]");
-	printf("\nSuccessfully printed the list!!.\n");
+
+	printf("\nSuccessfully printed the list.\n\n");
 
 	return 0;
 }
@@ -175,7 +175,7 @@ int deleteMain()
 	}
 
 	printf("\nSuccessfully deleted the node.\n");
-	if(display()) return 1;				//Displaying the new list.
+	if(display(header)) return 1;				//Displaying the new list.
 
 	return 0;
 }
@@ -187,7 +187,7 @@ int deleteMain()
 int deleteFront()
 {
 	//Checking if the list is empty:
-	if(header.next == NULL)
+	if(header -> next == NULL)
 	{
 		printf("\nThe list is empty!!");
 		return 1;
@@ -195,16 +195,16 @@ int deleteFront()
 
 	struct node *temp = NULL;
 
-	temp = header.next;		//Now temp points to the front node.
+	temp = header -> next;		//Now temp points to the front node.
 	
 	//If the list contains only one node:
 	if(temp -> next == NULL)
 	{
-		header.next = NULL;	
+		header -> next = NULL;	
 		return 0;
 	}
 
-	header.next = temp -> next;		//Now temp -> next points to the second node.
+	header -> next = temp -> next;		//Now temp -> next points to the second node.
 
 	return 0;
 }
@@ -218,7 +218,7 @@ int deletePos()
 	int pos, j = 0;
 
 	//Checking if the list is empty:
-	if(header.next == NULL)
+	if(header -> next == NULL)
 	{
 		printf("\nThe list is empty!!\n");
 		return 1;
@@ -229,7 +229,7 @@ int deletePos()
 	scanf("%d", &pos);
 
 	struct node *temp = NULL, *prev = NULL;
-	temp = header.next;
+	temp = header -> next;
 
 	while(temp != NULL && j < pos)
 	{
@@ -251,19 +251,19 @@ int deletePos()
 int deleteEnd()
 {
 	//Checking if the list is empty:
-	if(header.next == NULL)
+	if(header -> next == NULL)
 	{
 		printf("\nThe list is empty!!\n");
 		return 1;
 	}
 
 	struct node *temp = NULL, *prev = NULL;
-	temp = header.next;
+	temp = header -> next;
 
 	//If the list has only one node:
 	if(temp -> next == NULL)
 	{
-		header.next = NULL;
+		header -> next = NULL;
 		return 0;	
 	}
 

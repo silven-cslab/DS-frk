@@ -19,16 +19,6 @@
 #include<stdlib.h>		//For DMA functions like malloc(), free(),....
 
 
-/** ===== Function Prototypes ===== **/
-int create(void);
-int init(void);
-int display(void);
-int insertMain(void);
-int insertFront(void);
-int insertPos(void);
-int insertEnd(void);
-
-
 /** ===== Global Declaration ===== **/
 /* ---- Node Definition ---- */
 struct node {
@@ -36,20 +26,34 @@ struct node {
 	struct node *next;
 };
 
-struct node header, *N = NULL, new;		//Declaraing here for global access.
+struct node *header = NULL, *N = NULL, new;		//Declaraing here for global access.
 int n;
+
+
+/** ===== Function Prototypes ===== **/
+int create(void);
+int init(void);
+int display(struct node *);
+int insertMain(void);
+int insertFront(void);
+int insertPos(void);
+int insertEnd(void);
+
 
 
 /** ===== Main Function ===== **/
 int main()
 {
+	header = malloc(sizeof(struct node));
+
 	if(create()) return 1;
 	init();
 	printf("\nThe List is : ");
-	if(display()) return 1;
+	if(display(header)) return 1;
 	if(insertMain()) return 1;
 
 	//Free the memory:
+	free(header);  header = NULL;
 	free(N); N = NULL;
 
 	return 0;
@@ -93,7 +97,7 @@ int init()
 	int i = 0;
 
 	//Linking header node to the N nodes.
-	header.next = &N[0];
+	header -> next = &N[0];
 
 	//Taking the data of all the nodes.
 	printf("\nEnter the data of all of the nodes: ");
@@ -102,7 +106,7 @@ int init()
 		scanf("%d", &((N+i) -> data));
 		if(i == n-1)
 		{
-			(N+i) -> next = header.next;
+			(N+i) -> next = header -> next;
 			return 0;
 		}
 
@@ -119,27 +123,27 @@ int init()
 //display():
 //This function displays all of the nodes and it's data.
 
-int display()
+int display(struct node *head)
 {
 	//Checking the edge case:
-	if(header.next == NULL)
+	if(head -> next == NULL)
 	{
 		printf("\nThe list is empty!!\n\n");
 		return 1;
 	}
 
-	struct node *temp = header.next;
+	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
 	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}while(temp != header.next);
+	}while(temp != header -> next);
 
 	printf(" [ FIRST NODE ]");
-
-	printf("\nSuccessfully printed the list.\n\n");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
@@ -183,7 +187,7 @@ int insertMain()
 		return 1;
 	}
 	printf("\nSuccessfully inserted the node.\nThe list after the node insertion is: ");
-	display();
+	if(display(header))  return 1;
 
 	return 0;
 }
@@ -196,16 +200,16 @@ int insertFront()
 {
 	struct node *temp = NULL;
 
-	temp = header.next;
+	temp = header -> next;
 
 	//Linking the new node to the header node.
-	header.next = &new;
+	header -> next = &new;
 
 	//Linking the list to the new node that is inserted at the front position.
 	new.next = temp;
 
 	//Traversing upto the last node to link the last node to the first one.
-	temp = header.next;
+	temp = header -> next;
 
 	do
 	{
@@ -213,7 +217,7 @@ int insertFront()
 	}while(temp -> next != new.next);
 	
 
-	temp -> next = header.next;
+	temp -> next = header -> next;
 
 	return 0;
 }
@@ -247,9 +251,9 @@ int insertPos()
 	
 	struct node *temp = NULL, *prev = NULL;
 
-	temp = header.next;
+	temp = header -> next;
 
-	while(temp -> next != header.next && j < pos)
+	while(temp -> next != header -> next && j < pos)
 	{
 		prev = temp;
 		temp = temp -> next;
@@ -263,7 +267,7 @@ int insertPos()
 	new.next = temp;
 
 	//Display the modified list:
-	display();
+	if(display(header))  return 1;
 
 	return 0;
 }
@@ -276,18 +280,18 @@ int insertEnd()
 {
 	struct node *temp = NULL;
 
-	temp = header.next;
+	temp = header -> next;
 
 
 	//Traversing till the last node:
 	do 
 	{
 		temp = temp -> next;
-	}while(temp -> next != header.next);
+	}while(temp -> next != header -> next);
 
 	//Inserting the node at the end:
 	temp -> next = &new;
-	new.next = header.next;
+	new.next = header -> next;
 
 	return 0;
 		

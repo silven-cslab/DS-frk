@@ -18,13 +18,6 @@
 #include<stdlib.h>		//For DMA functions like malloc(), free(),....
 
 
-/** ===== Function Prototypes ===== **/
-int create(void);
-int init(void);
-int display(void);
-int reverse(void);
-
-
 /** ===== Global Declaration ===== **/
 /* ---- Node Definition ---- */
 struct node {
@@ -32,16 +25,25 @@ struct node {
 	struct node *next;
 };
 
-struct node header, *N = NULL;		//Declaraing here for global access.
+struct node *header = NULL, *N = NULL;		//Declaraing here for global access.
 int n;
+
+
+/** ===== Function Prototypes ===== **/
+int create(void);
+int init(void);
+int display(struct node *);
+int reverse(void);
 
 
 /** ===== Main Function ===== **/
 int main()
 {
+	header = malloc(sizeof(struct node));
+
 	if(create()) return 1;
 	init();
-	if(display()) return 1;
+	if(display(header)) return 1;
 	if(reverse()) return 1;
 
 	return 0;
@@ -85,7 +87,7 @@ int init()
 	int i = 0;
 
 	//Linking header node to the N nodes.
-	header.next = &N[0];
+	header -> next = &N[0];
 
 	//Taking the data of all the nodes.
 	printf("\nEnter the data of all of the nodes: ");
@@ -94,7 +96,7 @@ int init()
 		scanf("%d", &((N+i) -> data));
 		if(i == n-1)
 		{
-			(N+i) -> next = header.next;
+			(N+i) -> next = header -> next;
 			return 0;
 		}
 
@@ -109,28 +111,29 @@ int init()
 
 
 //display():
-//This function displays all of the nodes and it's data.
+//This function displays all of the nodes of the list.
 
-int display()
+int display(struct node *head)
 {
 	//Checking the edge case:
-	if(header.next == NULL)
+	if(head -> next == NULL)
 	{
 		printf("\nThe list is empty!!\n\n");
 		return 1;
 	}
 
-	struct node *temp = header.next;
+	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
 	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}while(temp != header.next);
-	printf(" [ FIRST NODE ]");
+	}while(temp != header -> next);
 
-	printf("\nSuccessfully printed the list.\n\n");
+	printf(" [ FIRST NODE ]");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
@@ -144,8 +147,8 @@ int reverse()
 	struct node *prev = NULL, *curr = NULL, *next = NULL, *prevFirst = NULL;
 
 	//Store the first node in curr:
-	curr = header.next;
-	prevFirst = header.next;
+	curr = header -> next;
+	prevFirst = header -> next;
 
 	do
 	{
@@ -153,16 +156,16 @@ int reverse()
 		curr -> next = prev;
 		prev = curr;
 		curr = next;
-	}while(curr != header.next);
+	}while(curr != header -> next);
 
 	//Linking the last node to the header node:
-	header.next = prev;
+	header -> next = prev;
 
 	//Linking the last node of the reversed list to first node:
-	prevFirst -> next = header.next;
+	prevFirst -> next = header -> next;
 
 	printf("\nThe reversed list is: ");
-	if(display()) return 1;
+	if(display(header)) return 1;
 
 	return 0;
 }

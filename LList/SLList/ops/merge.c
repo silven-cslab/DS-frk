@@ -136,21 +136,28 @@ int init(struct node *header, struct node *N, int size1)
 
 
 //display():
-//This function traverses through the list and displays the node values.
+//This function displays all of the nodes and it's data.
 
-int display(struct node *header)
+int display(struct node *head)
 {
-	struct node *temp = NULL;
-	temp = header->next;
+	//Checking the edge case:
+	if(head -> next == NULL)
+	{
+		printf("\nThe list is empty!!\n\n");
+		return 1;
+	}
 
-	//Traversing through the list:
-	printf("\nThe list is : \n");
+	struct node *temp = head -> next;
+
+	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
 	}
-	printf("[ NULL ]\n");
+	printf(" [ NULL ]");
+
+	printf("\nSuccessfully printed the list.\n\n");
 
 	return 0;
 }
