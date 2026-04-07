@@ -26,13 +26,14 @@ struct node {
 	struct node *next;
 };
 
-struct node *header = NULL, *N = NULL, new;		//Declaraing here for global access.
+struct node *header = NULL, *N = NULL, *new = NULL;		//Declaraing here for global access.
 int n;
 
 
 /** ===== Function Prototypes ===== **/
-int create(void);
-int init(void);
+struct node* createNode(int value);
+void createList(int n);
+void freeList(void);
 int display(struct node *);
 int insertMain(void);
 int insertFront(void);
@@ -44,13 +45,30 @@ int insertEnd(void);
 int main()
 {
 	header = malloc(sizeof(struct node));
-	if(create()) return 1;
-	init();
+	if(header == NULL)
+	{
+		printf("Memory allocation failed!\n");
+		return 1;
+	}
+
+	header->next = NULL;
+	printf("\nEnter the no. of nodes of the list: ");
+	scanf("%d", &n);
+	if(n < 1)
+	{
+		printf("\nInsufficient nodes to create a list!!\n\n");
+		free(header); header = NULL;
+		return 1;
+	}
+
+	printf("\nEnter the data of all of the nodes: ");
+	createList(n);
 	printf("\nThe List is : ");
 	if(display(header)) return 1;
 	if(insertMain()) return 1;
 
 	//free the allocated memory:
+	freeList();
 	free(header);  header = NULL;
 
 	return 0;
@@ -58,62 +76,79 @@ int main()
 
 
 /** ===== Function Definitions ===== **/
-//create():
-//This function allocates the memory for the nodes.
+//createNode():
+//This function allocates memory for a single node.
 
-int create()
+struct node* createNode(int value)
 {
-	//Taking the total no. of nodes from the user:
-	printf("\nEnter the no. of nodes of the list: ");
-	scanf("%d", &n);
+	struct node *newNode = (struct node*)malloc(sizeof(struct node));
 
-	if(n < 1)
+	if(newNode == NULL)
 	{
-		printf("\nInsufficient nodes to create a list!!\n\n");		//Handling edge cases.
-		return 1;
+		printf("Memory allocation failed!\n");
+		return NULL;
 	}
 
-	//Allocating the memory for the n nodes.
-	N = malloc(n * sizeof(struct node));
+	newNode->data = value;
+	newNode->next = NULL;
 
-	if(N == NULL)
-	{
-		printf("\nMemory allocation failed!");		//Checking if memory allocation is done or not.
-		return 1;				
-	}
-
-	return 0;
+	return newNode;
 }
 
 
-//init():
-//This function initializes all of the nodes in the list with a certain values.
+//createList():
+//This function initializes the list with user-provided values.
 
-int init()
+void createList(int n)
 {
-	int i = 0;
+	struct node *temp, *last = NULL;
 
-	//Linking header node to the N nodes.
-	header -> next = &N[0];
-
-	//Taking the data of all the nodes.
-	printf("\nEnter the data of all of the nodes: ");
-	while(i < n)
+	for(int i = 0; i < n; i++)
 	{
-		scanf("%d", &((N+i) -> data));
-		if(i == n-1)
+		int val;
+		scanf("%d", &val);
+
+		struct node *newNode = createNode(val);
+		if(newNode == NULL)
 		{
-			(N+i) -> next = NULL;
-			return 0;
+			freeList();
+			return;
 		}
 
-		(N+i) -> next = ((N+i)+1);
-		i += 1;
+		if(header->next == NULL)
+		{
+			header->next = newNode;
+		}
+		else
+		{
+			last->next = newNode;
+		}
+
+		last = newNode;
+		temp = newNode;
 	}
 
-	printf("\nSuccessfully initialized all the nodes with data.\n\n");
+	if(temp != NULL)
+	{
+		temp->next = NULL;
+	}
+}
 
-	return 0;
+
+void freeList(void)
+{
+	struct node *curr = header->next;
+	while(curr != NULL)
+	{
+		struct node *next = curr->next;
+		if(curr != new)
+		{
+			free(curr);
+		}
+		curr = next;
+	}
+
+	header->next = NULL;
 }
 
 
@@ -154,8 +189,10 @@ int insertMain()
 
 	//Creating the new node that is to be inserted:	
 	printf("\nEnter the data value of the new node that is to be inserted: ");
-	scanf("%d", &new.data);
-	new.next = NULL;
+	int newValue;
+	scanf("%d", &newValue);
+	new = createNode(newValue);
+	if(new == NULL) return 1;
 	printf("\nSuccessfully created the new node.\n");
 
 	//Taking the user's choice at which position should the node be inserted.
@@ -197,10 +234,10 @@ int insertFront()
 	temp = header -> next;
 
 	//Linking the new node to the header node.
-	header -> next = &new;
+	header -> next = new;
 
 	//Linking the list to the new node that is inserted at the front position.
-	new.next = temp;
+	new->next = temp;
 
 	//Display the list after the insertion:
 	if(display(header))  return 1;
@@ -247,10 +284,10 @@ int insertPos()
 	}
 	
 	//Linking the new node to the node befor position 'pos':
-	prev -> next = &new;
+	prev -> next = new;
 
 	//Linking the nodes from the position 'pos' to the the new node:
-	new.next = temp;
+	new->next = temp;
 
 	//Display the modified list:
 	if(display(header))  return 1;
@@ -276,8 +313,8 @@ int insertEnd()
 	}
 
 	//Inserting the node at the end:
-	temp -> next = &new;
-	new.next = NULL;
+	temp -> next = new;
+	new->next = NULL;
 
 	//Display the new list:
 	if(display(header))  return 1;
