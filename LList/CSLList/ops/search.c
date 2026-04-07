@@ -31,8 +31,9 @@ int n;
 
 
 /** ===== Function Prototypes ===== **/
-int create(void);
-int init(void);
+struct node* createNode(int value);
+void createList(int n);
+void freeList(void);
 int display(struct node *);
 int search(void);
 
@@ -41,78 +42,129 @@ int search(void);
 /** ===== Main Function ===== **/
 int main()
 {
+	int status = 0;
 	header = malloc(sizeof(struct node));
+	if(header == NULL)
+	{
+		printf("Memory allocation failed!\n");
+		return 1;
+	}
+	header->next = NULL;
 
-	if(create()) return 1;
-	init();
-	if(display(header)) return 1;
+	printf("\nEnter the no. of nodes of the list: ");
+	scanf("%d", &n);
+	if(n < 1)
+	{
+		printf("\nInsufficient nodes to create a list!!\n\n");
+		status = 1;
+		goto cleanup;
+	}
+
+	printf("\nEnter the data of all of the nodes: ");
+	createList(n);
+	if(header->next == NULL)
+	{
+		status = 1;
+		goto cleanup;
+	}
+
+	if(display(header))
+	{
+		status = 1;
+		goto cleanup;
+	}
 	search();
 
+	cleanup:
 	//Free memory:
+	freeList();
 	free(header);  header = NULL;
-	free(N); N = NULL;
 
-	return 0;
+	return status;
 }
 
 
 /** ===== Function Definitions ===== **/
-//create():
-//This function allocates the memory for the nodes.
+//createNode():
+//This function allocates memory for a single node.
 
-int create()
+struct node* createNode(int value)
 {
-	//Taking the total no. of nodes from the user:
-	printf("\nEnter the no. of nodes of the list: ");
-	scanf("%d", &n);
+	struct node *newNode = (struct node*)malloc(sizeof(struct node));
 
-	if(n < 1)
+	if(newNode == NULL)
 	{
-		printf("\nInsufficient nodes to create a list!!\n\n");		//Handling edge cases.
-		return 1;
+		printf("Memory allocation failed!\n");
+		return NULL;
 	}
 
-	//Allocating the memory for the n nodes.
-	N = malloc(n * sizeof(struct node));
+	newNode->data = value;
+	newNode->next = NULL;
 
-	if(N == NULL)
-	{
-		printf("\nMemory allocation failed!");		//Checking if memory allocation is done or not.
-		return 1;				
-	}
-
-	return 0;
+	return newNode;
 }
 
 
-//init():
-//This function initializes all of the nodes in the list with a certain values.
+//createList():
+//This function initializes the list with user-provided values.
 
-int init()
+void createList(int n)
 {
-	int i = 0;
+	struct node *temp, *last = NULL;
 
-	//Linking header node to the N nodes.
-	header -> next = &N[0];
-
-	//Taking the data of all the nodes.
-	printf("\nEnter the data of all of the nodes: ");
-	while(i < n)
+	for(int i = 0; i < n; i++)
 	{
-		scanf("%d", &((N+i) -> data));
-		if(i == n-1)
+		int val;
+		scanf("%d", &val);
+
+		struct node *newNode = createNode(val);
+
+		if(newNode == NULL)
 		{
-			(N+i) -> next = header -> next;
-			return 0;
+			freeList();
+			return;
 		}
 
-		(N+i) -> next = ((N+i)+1);
-		i += 1;
+		if(header->next == NULL)
+		{
+			header->next = newNode;
+			newNode->next = newNode; // circular
+		}
+		else
+		{
+			newNode->next = header->next;
+			last->next = newNode;
+		}
+
+		last = newNode;
+		temp = newNode;
+	}
+
+	if(temp != NULL)
+	{
+		temp->next = header->next;
 	}
 
 	printf("\nSuccessfully initialized all the nodes with data.\n\n");
+}
 
-	return 0;
+void freeList(void)
+{
+	if(header->next == NULL)
+	{
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
+	{
+		struct node *next = curr->next;
+		free(curr);
+		curr = next;
+	}
+	free(first);
+	header->next = NULL;
 }
 
 

@@ -29,8 +29,9 @@ int n;
 
 
 /** ===== Function Prototypes ===== **/
-int create(void);
-int init(void);
+struct node* createNode(int value);
+void createList(int n);
+void freeList(void);
 int display(struct node *);
 int deleteMain(void);
 int deleteFront(void);
@@ -41,80 +42,133 @@ int deleteEnd(void);
 /** ===== Main Function ===== **/
 int main()
 {
+	int status = 0;
 	header = malloc(sizeof(struct node));
+	if(header == NULL)
+	{
+		printf("Memory allocation failed!\n");
+		return 1;
+	}
+	header->next = NULL;
 
-	if(create()) return 1;
-	init();
-	if(display(header)) return 1;
-	if(deleteMain()) return 1;
+	printf("\nEnter the no. of nodes: ");
+	scanf("%d", &n);
+	if(n < 1)
+	{
+		printf("\nNot enough nodes to create!!\n");
+		status = 1;
+		goto cleanup;
+	}
 
+	printf("\nEnter all the values of the nodes in the list: ");
+	createList(n);
+	if(header->next == NULL)
+	{
+		status = 1;
+		goto cleanup;
+	}
+
+	if(display(header))
+	{
+		status = 1;
+		goto cleanup;
+	}
+	if(deleteMain())
+	{
+		status = 1;
+	}
+
+	cleanup:
 	//Free memory:
+	freeList();
 	free(header);  header = NULL;
-	free(N); N = NULL;
 
-	return 0;
+	return status;
 }
 
 
 /** ===== Function Definitions ===== **/
  
-//create():
-//This function creates the specified no. of nodes and allocates them some memory.
+//createNode():
+//This function allocates memory for a single node.
 
-int create()
+struct node* createNode(int value)
 {
-	//Taking the no. of nodes from the user.
-	printf("\nEnter the no. of nodes: ");
-	scanf("%d", &n);
+	struct node *newNode = (struct node*)malloc(sizeof(struct node));
 
-	if(n < 1)
+	if(newNode == NULL)
 	{
-		printf("\nNot enough nodes to create!!\n");	//Checking Edge case.
-		return 1;
+		printf("Memory allocation failed!\n");
+		return NULL;
 	}
 
-	//Allocating memory for all of the nodes:
-	N = malloc(n * sizeof(struct node));
-	
-	if(N == NULL)
-	{
-		printf("\nMemory allocation failed!!\n");		//Checking if memory allocation is failed.
-		return 1;
-	}
+	newNode->data = value;
+	newNode->next = NULL;
 
-	return 0;
+	return newNode;
 }
 
 
-//init():
-//This function intialises all of the nodes with data values taken from the user.
+//createList():
+//This function initializes the list with user-provided values.
 
-int init()
+void createList(int n)
 {
-	int i = 0;
+	struct node *temp, *last = NULL;
 
-	//Linking the first node to the header node:
-	header -> next = &N[0];
-	
-	//Taking the data values from the user:
-	printf("\nEnter all the values of the nodes in the list: ");
-	
-	for(i=0;i<n;i++)
+	for(int i = 0; i < n; i++)
 	{
-		scanf("%d", &((N+i) -> data));
+		int val;
+		scanf("%d", &val);
 
-		if(i == n-1)
+		struct node *newNode = createNode(val);
+
+		if(newNode == NULL)
 		{
-			(N+i) -> next = header -> next;
-			break;
+			freeList();
+			return;
 		}
 
-		(N+i) -> next = ((N+i)+1);
+		if(header->next == NULL)
+		{
+			header->next = newNode;
+			newNode->next = newNode; // circular
+		}
+		else
+		{
+			newNode->next = header->next;
+			last->next = newNode;
+		}
+
+		last = newNode;
+		temp = newNode;
+	}
+
+	if(temp != NULL)
+	{
+		temp->next = header->next;
 	}
 
 	printf("\nSuccessfully stored all of the data values.\n");
+}
 
-	return 0;
+void freeList(void)
+{
+	if(header->next == NULL)
+	{
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
+	{
+		struct node *next = curr->next;
+		free(curr);
+		curr = next;
+	}
+	free(first);
+	header->next = NULL;
 }
 
 
@@ -204,6 +258,7 @@ int deleteFront()
 	if(temp -> next == temp)
 	{
 		header -> next = NULL;	
+		free(temp);
 		return 0;
 	}
 
@@ -217,6 +272,7 @@ int deleteFront()
 
 	//Fix the circular link:
 	temp -> next = header -> next;
+	free(curr);
 
 	return 0;
 }
@@ -250,7 +306,14 @@ int deletePos()
 		j += 1;
 	}while(temp -> next != header -> next && j < pos);
 
+	if(pos < 0)
+	{
+		printf("\nPosition out of range.\n");
+		return 1;
+	}
+
 	prev -> next = temp -> next;
+	free(temp);
 
 	return 0;
 
@@ -273,9 +336,10 @@ int deleteEnd()
 	temp = header -> next;
 
 	//If the list has only one node:
-	if(temp -> next == NULL)
+	if(temp -> next == temp)
 	{
 		header -> next = NULL;
+		free(temp);
 		return 0;	
 	}
 
@@ -288,6 +352,7 @@ int deleteEnd()
 
 	//Deleting the link betwwen the n and n-1 node:
 	prev -> next = header -> next;
+	free(temp);
 
 	return 0;
 }
