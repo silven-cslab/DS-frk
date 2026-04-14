@@ -1,9 +1,9 @@
-/** ===== Single Linked List: Reversing of the list  ===== **/
+/** ===== Circular Single Linked List: Reversing of the list  ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the reverse operation on a Single Linked List.
+ * This program shows the implementation of the reverse operation on a Circular Single Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
@@ -35,7 +35,6 @@ void createList(int n);
 void freeList(void);
 int display(struct node *);
 int reverse(void);
-
 
 
 /** ===== Main Function ===== **/
@@ -78,9 +77,8 @@ int main()
 	}
 
 	cleanup:
-	//free the allocated memory:
 	freeList();
-	free(header);  header = NULL;
+	free(header); header = NULL;
 
 	return status;
 }
@@ -120,6 +118,7 @@ void createList(int n)
 		scanf("%d", &val);
 
 		struct node *newNode = createNode(val);
+
 		if(newNode == NULL)
 		{
 			freeList();
@@ -129,9 +128,11 @@ void createList(int n)
 		if(header->next == NULL)
 		{
 			header->next = newNode;
+			newNode->next = newNode; // circular
 		}
 		else
 		{
+			newNode->next = header->next;
 			last->next = newNode;
 		}
 
@@ -141,7 +142,7 @@ void createList(int n)
 
 	if(temp != NULL)
 	{
-		temp->next = NULL;
+		temp->next = header->next;
 	}
 
 	printf("\nSuccessfully initialized all the nodes with data.\n\n");
@@ -149,19 +150,26 @@ void createList(int n)
 
 void freeList(void)
 {
-	struct node *curr = header->next;
-	while(curr != NULL)
+	if(header->next == NULL)
+	{
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
 	{
 		struct node *next = curr->next;
 		free(curr);
 		curr = next;
 	}
+	free(first);
 	header->next = NULL;
 }
 
 
 //display():
-//This function displays all of the nodes and it's data.
+//This function displays all of the nodes of the list.
 
 int display(struct node *head)
 {
@@ -174,15 +182,16 @@ int display(struct node *head)
 
 	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
-	while(temp != NULL)
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
+	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}
-	printf(" [ NULL ]");
+	}while(temp != header -> next);
 
-	printf("\nSuccessfully printed the list.\n\n");
+	printf(" [ FIRST NODE ]");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
@@ -193,21 +202,25 @@ int display(struct node *head)
 
 int reverse()
 {
-	struct node *prev = NULL, *curr = NULL, *next = NULL;
+	struct node *prev = NULL, *curr = NULL, *next = NULL, *prevFirst = NULL;
 
 	//Store the first node in curr:
 	curr = header -> next;
+	prevFirst = header -> next;
 
-	while(curr != NULL)
+	do
 	{
 		next = curr -> next;
 		curr -> next = prev;
 		prev = curr;
 		curr = next;
-	}
+	}while(curr != header -> next);
 
 	//Linking the last node to the header node:
 	header -> next = prev;
+
+	//Linking the last node of the reversed list to first node:
+	prevFirst -> next = header -> next;
 
 	printf("\nThe reversed list is: ");
 	if(display(header)) return 1;

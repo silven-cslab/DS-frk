@@ -1,9 +1,9 @@
-/** ===== Singly Linked List: Deletion Operation Implementation ===== **/
+/** ===== Circular Singly Linked List: Deletion Operation Implementation ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program creates a singly linked list with specified no. of nodes.
+ * This program creates a circular singly linked list with specified no. of nodes.
  * And, allocates the memory for all of the nodes in the list.
  * Then, initializes all of the nodes with the data values specified by the user.
  * Displays the entire list after initialization.
@@ -43,15 +43,14 @@ int deleteEnd(void);
 int main()
 {
 	int status = 0;
-
 	header = malloc(sizeof(struct node));
 	if(header == NULL)
 	{
 		printf("Memory allocation failed!\n");
 		return 1;
 	}
-
 	header->next = NULL;
+
 	printf("\nEnter the no. of nodes: ");
 	scanf("%d", &n);
 	if(n < 1)
@@ -68,6 +67,7 @@ int main()
 		status = 1;
 		goto cleanup;
 	}
+
 	if(display(header))
 	{
 		status = 1;
@@ -78,7 +78,7 @@ int main()
 		status = 1;
 	}
 
-cleanup:
+	cleanup:
 	//Free memory:
 	freeList();
 	free(header);  header = NULL;
@@ -122,6 +122,7 @@ void createList(int n)
 		scanf("%d", &val);
 
 		struct node *newNode = createNode(val);
+
 		if(newNode == NULL)
 		{
 			freeList();
@@ -131,9 +132,11 @@ void createList(int n)
 		if(header->next == NULL)
 		{
 			header->next = newNode;
+			newNode->next = newNode; // circular
 		}
 		else
 		{
+			newNode->next = header->next;
 			last->next = newNode;
 		}
 
@@ -143,28 +146,34 @@ void createList(int n)
 
 	if(temp != NULL)
 	{
-		temp->next = NULL;
+		temp->next = header->next;
 	}
 
 	printf("\nSuccessfully stored all of the data values.\n");
 }
 
-
 void freeList(void)
 {
-	struct node *curr = header->next;
-	while(curr != NULL)
+	if(header->next == NULL)
+	{
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
 	{
 		struct node *next = curr->next;
 		free(curr);
 		curr = next;
 	}
+	free(first);
 	header->next = NULL;
 }
 
 
 //display():
-//This function displays all of the nodes and it's data.
+//This function displays all of the nodes of the list.
 
 int display(struct node *head)
 {
@@ -177,15 +186,16 @@ int display(struct node *head)
 
 	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
-	while(temp != NULL)
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
+	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}
-	printf(" [ NULL ]");
+	}while(temp != header -> next);
 
-	printf("\nSuccessfully printed the list.\n\n");
+	printf(" [ FIRST NODE ]");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
@@ -234,26 +244,35 @@ int deleteMain()
 int deleteFront()
 {
 	//Checking if the list is empty:
-	if(header -> next == NULL)
+	if(header ->  next == NULL)
 	{
 		printf("\nThe list is empty!!");
 		return 1;
 	}
 
-	struct node *temp = NULL;
+	struct node *temp = NULL, *curr = NULL;
 
 	temp = header -> next;		//Now temp points to the front node.
 	
 	//If the list contains only one node:
-	if(temp -> next == NULL)
+	if(temp -> next == temp)
 	{
 		header -> next = NULL;	
 		free(temp);
 		return 0;
 	}
 
-	header -> next = temp -> next;		//Now temp -> next points to the second node.
-	free(temp);
+	while(temp -> next != header -> next)
+	{
+		temp = temp -> next;
+	}
+
+	curr = header -> next;
+	header -> next = curr -> next;		//Here temp -> next points to the second node.
+
+	//Fix the circular link:
+	temp -> next = header -> next;
+	free(curr);
 
 	return 0;
 }
@@ -280,14 +299,14 @@ int deletePos()
 	struct node *temp = NULL, *prev = NULL;
 	temp = header -> next;
 
-	while(temp != NULL && j < pos)
+	do
 	{
 		prev = temp;
 		temp = temp -> next;
 		j += 1;
-	}
+	}while(temp -> next != header -> next && j < pos);
 
-	if(temp == NULL)
+	if(pos < 0)
 	{
 		printf("\nPosition out of range.\n");
 		return 1;
@@ -317,7 +336,7 @@ int deleteEnd()
 	temp = header -> next;
 
 	//If the list has only one node:
-	if(temp -> next == NULL)
+	if(temp -> next == temp)
 	{
 		header -> next = NULL;
 		free(temp);
@@ -325,14 +344,14 @@ int deleteEnd()
 	}
 
 	//Traversing till the end of the list:
-	while(temp -> next != NULL)
+	while(temp -> next != header -> next)
 	{
 		prev = temp;
 		temp = temp -> next;
 	}
 
 	//Deleting the link betwwen the n and n-1 node:
-	prev -> next = NULL;
+	prev -> next = header -> next;
 	free(temp);
 
 	return 0;

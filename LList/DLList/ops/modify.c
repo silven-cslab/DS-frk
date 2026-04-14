@@ -1,16 +1,15 @@
-/** ===== Single Linked List: Linear Search ===== **/
+/** ===== Double Linked List: Modify a Node's Value ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the search operation on a Single Linked List.
+ * This program shows the implementation of the modification of the node's value of a Double Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
 	* Display the List.
-	* Then, searches for an element specified by the user in the list.
- * At last, prints the element position if it is found. 
- * If the element is not found then prints a message that tells that element was not found.
+	* Then, modifies the specific node's value(By position).
+ * At last, prints the final list.
 */
 
 
@@ -23,6 +22,7 @@
 /* ---- Node Definition ---- */
 struct node {
 	int data;
+	struct node *prev;
 	struct node *next;
 };
 
@@ -35,7 +35,7 @@ struct node* createNode(int value);
 void createList(int n);
 void freeList(void);
 int display(struct node *);
-int search(void);
+int modify(void);
 
 
 /** ===== Main Function ===== **/
@@ -72,7 +72,10 @@ int main()
 		status = 1;
 		goto cleanup;
 	}
-	search();
+	if(modify())
+	{
+		status = 1;
+	}
 
 	cleanup:
 	//Free memory:
@@ -98,6 +101,7 @@ struct node* createNode(int value)
 	}
 
 	newNode->data = value;
+	newNode->prev = NULL;
 	newNode->next = NULL;
 
 	return newNode;
@@ -129,6 +133,7 @@ void createList(int n)
 		}
 		else
 		{
+			newNode -> prev = last;
 			last->next = newNode;
 		}
 
@@ -174,10 +179,10 @@ int display(struct node *head)
 	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
-		printf("[ %d ] -> ", temp -> data);
+		printf("[ %d ] -> <- ", temp -> data);
 		temp = temp -> next;
 	}
-	printf(" [ NULL ]");
+	printf("\b\b\b [ NULL ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 
@@ -185,34 +190,46 @@ int display(struct node *head)
 }
 
 
-//search():
-//This function takes an element from the user and searches for the element in the list.
+//modify():
+//This function takes the position of a node in list and modifies its value.
 
-int search()
+int modify()
 {
-	int key, i = 0;
+	int key, i = 0, newValue;
 	
 	//Taking the element from the user:
-	printf("\nEnter the element that is to be searched: ");
+	printf("\nEnter the position of the node whose value is to be modified: ");
 	scanf("%d", &key);
 
+	//Taking the new value from the user:
+	printf("\nEnter the new value: ");
+	scanf("%d", &newValue);
+
+	//Checking if position is out of bounds:
+	if(key < 1 || key >= n)
+	{	
+		printf("\nPosition of the node is out of bounds. Can't Access!!\n");
+		return 1;
+	}
+
 	struct node *temp = NULL;
-	temp = header;
+	temp = header -> next;
 
 	//Traversing through the entire list:
-	while(temp -> next != NULL)
+	while(temp != NULL)
 	{
-		if(temp -> data == key)		//Comparing the node with key.
+		if(i == key)		//Comparing the node with key.
 		{
-			printf("\n%d is found in the list at the position: %d\n", key, i);
+			temp -> data = newValue;	//Modify the value.
 			
-			return 0;
+			break;
 		}
 		i += 1;
 		temp = temp -> next;
 	}	
 
-	printf("\nElement was not found.\n");
+	printf("\nThe modified list is: \n");
+	if(display(header)) return 1;		//Display the modified list.
 	
-	return 1;
+	return 0;
 }

@@ -1,15 +1,15 @@
-/** ===== Single Linked List: Reversing of the list  ===== **/
+/** ===== Circular Single Linked List: Modify a Node's Value ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the reverse operation on a Single Linked List.
+ * This program shows the implementation of the modification of the node's value of  a Circular Single Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
 	* Display the List.
-	* Then, reverses the list.
- * At last, prints the reversed list. 
+	* Then, modifies the specific node's value(By position).
+ * At last, prints the final list.
 */
 
 
@@ -25,7 +25,7 @@ struct node {
 	struct node *next;
 };
 
-struct node *header = NULL, *N = NULL;		//Declaraing here for global access.
+struct node *header = NULL, *N = NULL, new;		//Declaraing here for global access.
 int n;
 
 
@@ -34,7 +34,7 @@ struct node* createNode(int value);
 void createList(int n);
 void freeList(void);
 int display(struct node *);
-int reverse(void);
+int modify(void);
 
 
 
@@ -72,13 +72,13 @@ int main()
 		status = 1;
 		goto cleanup;
 	}
-	if(reverse())
+	if(modify())
 	{
 		status = 1;
 	}
 
 	cleanup:
-	//free the allocated memory:
+	//Free memory:
 	freeList();
 	free(header);  header = NULL;
 
@@ -120,6 +120,7 @@ void createList(int n)
 		scanf("%d", &val);
 
 		struct node *newNode = createNode(val);
+
 		if(newNode == NULL)
 		{
 			freeList();
@@ -129,9 +130,11 @@ void createList(int n)
 		if(header->next == NULL)
 		{
 			header->next = newNode;
+			newNode->next = newNode; // circular
 		}
 		else
 		{
+			newNode->next = header->next;
 			last->next = newNode;
 		}
 
@@ -141,7 +144,7 @@ void createList(int n)
 
 	if(temp != NULL)
 	{
-		temp->next = NULL;
+		temp->next = header->next;
 	}
 
 	printf("\nSuccessfully initialized all the nodes with data.\n\n");
@@ -149,19 +152,26 @@ void createList(int n)
 
 void freeList(void)
 {
-	struct node *curr = header->next;
-	while(curr != NULL)
+	if(header->next == NULL)
+	{
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
 	{
 		struct node *next = curr->next;
 		free(curr);
 		curr = next;
 	}
+	free(first);
 	header->next = NULL;
 }
 
 
 //display():
-//This function displays all of the nodes and it's data.
+//This function displays all of the nodes of the list.
 
 int display(struct node *head)
 {
@@ -174,43 +184,61 @@ int display(struct node *head)
 
 	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
-	while(temp != NULL)
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
+	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}
-	printf(" [ NULL ]");
+	}while(temp != header -> next);
 
-	printf("\nSuccessfully printed the list.\n\n");
+	printf(" [ FIRST NODE ]");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
 
 
-//reverse():
-//This function reverses the list.
+//modify():
+//This function takes the position of a node in list and modifies its value.
 
-int reverse()
+int modify()
 {
-	struct node *prev = NULL, *curr = NULL, *next = NULL;
+	int key, i = 0, newValue;
+	
+	//Taking the element from the user:
+	printf("\nEnter the position of the node whose value is to be modified: ");
+	scanf("%d", &key);
 
-	//Store the first node in curr:
-	curr = header -> next;
+	//Taking the new value from the user:
+	printf("\nEnter the new value: ");
+	scanf("%d", &newValue);
 
-	while(curr != NULL)
-	{
-		next = curr -> next;
-		curr -> next = prev;
-		prev = curr;
-		curr = next;
+	//Checking if position is out of bounds:
+	if(key < 0 || key >= n)
+	{	
+		printf("\nPosition of the node is out of bounds. Can't Access!!\n");
+		return 1;
 	}
 
-	//Linking the last node to the header node:
-	header -> next = prev;
+	struct node *temp = NULL;
+	temp = header -> next;
 
-	printf("\nThe reversed list is: ");
-	if(display(header)) return 1;
+	//Traversing through the entire list:
+	do
+	{
+		if(i == key)		//Comparing the node with key.
+		{
+			temp -> data = newValue;	//Modify the value.
+			
+			break;
+		}
+		i += 1;
+		temp = temp -> next;
+	}while(temp -> next != header -> next);
 
+	printf("\nThe modified list is: \n");
+	if(display(header)) return 1;		//Display the modified list.
+	
 	return 0;
 }

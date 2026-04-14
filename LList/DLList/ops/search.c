@@ -1,9 +1,9 @@
-/** ===== Single Linked List: Linear Search ===== **/
+/** ===== Double Linked List: Linear Search ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the search operation on a Single Linked List.
+ * This program shows the implementation of the search operation on a Double Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
@@ -23,6 +23,7 @@
 /* ---- Node Definition ---- */
 struct node {
 	int data;
+	struct node *prev;
 	struct node *next;
 };
 
@@ -98,6 +99,7 @@ struct node* createNode(int value)
 	}
 
 	newNode->data = value;
+	newNode->prev = NULL;
 	newNode->next = NULL;
 
 	return newNode;
@@ -129,6 +131,7 @@ void createList(int n)
 		}
 		else
 		{
+			newNode->prev = last;
 			last->next = newNode;
 		}
 
@@ -174,10 +177,10 @@ int display(struct node *head)
 	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
-		printf("[ %d ] -> ", temp -> data);
+		printf("[ %d ] -> <- ", temp -> data);
 		temp = temp -> next;
 	}
-	printf(" [ NULL ]");
+	printf("\b\b\b [ NULL ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 

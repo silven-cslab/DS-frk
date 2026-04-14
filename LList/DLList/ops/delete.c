@@ -1,9 +1,9 @@
-/** ===== Singly Linked List: Deletion Operation Implementation ===== **/
+/** ===== Double Linked List: Deletion Operation Implementation ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program creates a singly linked list with specified no. of nodes.
+ * This program creates a double linked list with specified no. of nodes.
  * And, allocates the memory for all of the nodes in the list.
  * Then, initializes all of the nodes with the data values specified by the user.
  * Displays the entire list after initialization.
@@ -21,6 +21,7 @@
 /* ---- Node Definition ---- */
 struct node {
 	int data;
+	struct node *prev;
 	struct node *next;
 };
 
@@ -104,6 +105,7 @@ struct node* createNode(int value)
 
 	newNode->data = value;
 	newNode->next = NULL;
+	newNode->prev = NULL;
 
 	return newNode;
 }
@@ -134,6 +136,7 @@ void createList(int n)
 		}
 		else
 		{
+			newNode->prev = last;
 			last->next = newNode;
 		}
 
@@ -180,10 +183,10 @@ int display(struct node *head)
 	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
-		printf("[ %d ] -> ", temp -> data);
+		printf("[ %d ] -> <- ", temp -> data);
 		temp = temp -> next;
 	}
-	printf(" [ NULL ]");
+	printf("\b\b\b [ NULL ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 
@@ -277,7 +280,7 @@ int deletePos()
 	printf("\nEnter the Position of the node: ");
 	scanf("%d", &pos);
 
-	struct node *temp = NULL, *prev = NULL;
+	struct node *temp = NULL, *prev = NULL, *next = NULL;;
 	temp = header -> next;
 
 	while(temp != NULL && j < pos)
@@ -294,6 +297,9 @@ int deletePos()
 	}
 
 	prev -> next = temp -> next;
+	next = temp -> next;
+	next -> prev = prev;
+
 	free(temp);
 
 	return 0;

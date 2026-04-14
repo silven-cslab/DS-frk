@@ -1,9 +1,9 @@
-/** ===== Single Linked List: Linear Search ===== **/
+/** ===== Circular Single Linked List: Linear Search ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the search operation on a Single Linked List.
+ * This program shows the implementation of the search operation on a Circular Single Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
@@ -36,6 +36,7 @@ void createList(int n);
 void freeList(void);
 int display(struct node *);
 int search(void);
+
 
 
 /** ===== Main Function ===== **/
@@ -117,6 +118,7 @@ void createList(int n)
 		scanf("%d", &val);
 
 		struct node *newNode = createNode(val);
+
 		if(newNode == NULL)
 		{
 			freeList();
@@ -126,9 +128,11 @@ void createList(int n)
 		if(header->next == NULL)
 		{
 			header->next = newNode;
+			newNode->next = newNode; // circular
 		}
 		else
 		{
+			newNode->next = header->next;
 			last->next = newNode;
 		}
 
@@ -138,7 +142,7 @@ void createList(int n)
 
 	if(temp != NULL)
 	{
-		temp->next = NULL;
+		temp->next = header->next;
 	}
 
 	printf("\nSuccessfully initialized all the nodes with data.\n\n");
@@ -146,19 +150,26 @@ void createList(int n)
 
 void freeList(void)
 {
-	struct node *curr = header->next;
-	while(curr != NULL)
+	if(header->next == NULL)
+	{
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
 	{
 		struct node *next = curr->next;
 		free(curr);
 		curr = next;
 	}
+	free(first);
 	header->next = NULL;
 }
 
 
 //display():
-//This function displays all of the nodes and it's data.
+//This function displays all of the nodes of the list.
 
 int display(struct node *head)
 {
@@ -171,15 +182,16 @@ int display(struct node *head)
 
 	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
-	while(temp != NULL)
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
+	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}
-	printf(" [ NULL ]");
+	}while(temp != header -> next);
 
-	printf("\nSuccessfully printed the list.\n\n");
+	printf(" [ FIRST NODE ]");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
@@ -197,10 +209,10 @@ int search()
 	scanf("%d", &key);
 
 	struct node *temp = NULL;
-	temp = header;
+	temp = header -> next;
 
 	//Traversing through the entire list:
-	while(temp -> next != NULL)
+	do
 	{
 		if(temp -> data == key)		//Comparing the node with key.
 		{
@@ -210,7 +222,7 @@ int search()
 		}
 		i += 1;
 		temp = temp -> next;
-	}	
+	}while(temp != header -> next);	
 
 	printf("\nElement was not found.\n");
 	

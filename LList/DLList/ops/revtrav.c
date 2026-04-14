@@ -1,15 +1,15 @@
-/** ===== Single Linked List: Reversing of the list  ===== **/
+/** ===== Double Linked List: Backward Traversing of the list  ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the reverse operation on a Single Linked List.
+ * This program shows the implementation of the Backward traversal operation on a double Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
 	* Display the List.
-	* Then, reverses the list.
- * At last, prints the reversed list. 
+	* Then, backward traversal of the list.
+ * At last, prints the forward traversed and backward traversed lists. 
 */
 
 
@@ -22,6 +22,7 @@
 /* ---- Node Definition ---- */
 struct node {
 	int data;
+	struct node *prev;
 	struct node *next;
 };
 
@@ -34,7 +35,7 @@ struct node* createNode(int value);
 void createList(int n);
 void freeList(void);
 int display(struct node *);
-int reverse(void);
+int reverseTraverse(struct node *);
 
 
 
@@ -67,12 +68,15 @@ int main()
 		goto cleanup;
 	}
 
+	printf("\nThe List is: ");
 	if(display(header))
 	{
 		status = 1;
 		goto cleanup;
 	}
-	if(reverse())
+
+	printf("\nThe List when backward traversal: ");
+	if(reverseTraverse(header))
 	{
 		status = 1;
 	}
@@ -101,6 +105,7 @@ struct node* createNode(int value)
 	}
 
 	newNode->data = value;
+	newNode->prev = NULL;
 	newNode->next = NULL;
 
 	return newNode;
@@ -132,6 +137,7 @@ void createList(int n)
 		}
 		else
 		{
+			newNode->prev = last;
 			last->next = newNode;
 		}
 
@@ -177,10 +183,10 @@ int display(struct node *head)
 	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
-		printf("[ %d ] -> ", temp -> data);
+		printf("[ %d ] -> <- ", temp -> data);
 		temp = temp -> next;
 	}
-	printf(" [ NULL ]");
+	printf("\b\b\b [ NULL ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 
@@ -188,29 +194,30 @@ int display(struct node *head)
 }
 
 
-//reverse():
-//This function reverses the list.
+//reverseTraverse():
+//This function shows the implementation of the backward traversal of the double linked list.
 
-int reverse()
+int reverseTraverse(struct node *head)
 {
-	struct node *prev = NULL, *curr = NULL, *next = NULL;
+	struct node *temp = head -> next;
 
-	//Store the first node in curr:
-	curr = header -> next;
-
-	while(curr != NULL)
+	//Traverse upto the last node:
+	while(temp -> next != NULL)
 	{
-		next = curr -> next;
-		curr -> next = prev;
-		prev = curr;
-		curr = next;
+		temp = temp -> next;
 	}
 
-	//Linking the last node to the header node:
-	header -> next = prev;
+	struct node *lastPrev = temp;
 
-	printf("\nThe reversed list is: ");
-	if(display(header)) return 1;
+	//Backward Traversing:
+	while(lastPrev != NULL)
+	{
+		printf("[ %d ] -> <- ", lastPrev -> data);
+		lastPrev = lastPrev -> prev;
+	}
+	printf("\b\b\b [ NULL ]");
+
+	printf("\nSuccessfully printed the list.\n\n");
 
 	return 0;
 }

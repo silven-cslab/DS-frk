@@ -1,16 +1,16 @@
-/** ===== Single Linked List: Node Insertion Implementation ===== **/
+/** ===== Circular Single Linked List: Node Insertion Implementation ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
-* This program shows the implementation of the Node Insertion operation on a Single Linked List.
-* In this we do the following processes:
-	* Creation of the List.
+ * This program shows the implementation of the Node Insertion operation on a Circular Single Linked List.
+ * In this we do the following processes:
+ 	* Creation of the List.
 	* Initialization of the List with certain values.
 	* Display the List.
 	* Insertion of a new node at the front or middle(any position) or at the end of the list.
 	* Again, display the new list.
-* Thus, we finally insert a new node at the required position of the list.
+ * Thus, we finally insert a new node at the required position of the list.
 */
 
 
@@ -41,37 +41,52 @@ int insertPos(void);
 int insertEnd(void);
 
 
+
 /** ===== Main Function ===== **/
 int main()
 {
+	int status = 0;
 	header = malloc(sizeof(struct node));
 	if(header == NULL)
 	{
 		printf("Memory allocation failed!\n");
 		return 1;
 	}
-
 	header->next = NULL;
+
 	printf("\nEnter the no. of nodes of the list: ");
 	scanf("%d", &n);
 	if(n < 1)
 	{
 		printf("\nInsufficient nodes to create a list!!\n\n");
-		free(header); header = NULL;
-		return 1;
+		status = 1;
+		goto cleanup;
 	}
 
 	printf("\nEnter the data of all of the nodes: ");
 	createList(n);
+	if(header->next == NULL)
+	{
+		status = 1;
+		goto cleanup;
+	}
 	printf("\nThe List is : ");
-	if(display(header)) return 1;
-	if(insertMain()) return 1;
+	if(display(header))
+	{
+		status = 1;
+		goto cleanup;
+	}
+	if(insertMain())
+	{
+		status = 1;
+	}
 
-	//free the allocated memory:
+	cleanup:
+	//Free the memory:
 	freeList();
 	free(header);  header = NULL;
 
-	return 0;
+	return status;
 }
 
 
@@ -109,6 +124,7 @@ void createList(int n)
 		scanf("%d", &val);
 
 		struct node *newNode = createNode(val);
+
 		if(newNode == NULL)
 		{
 			freeList();
@@ -118,9 +134,11 @@ void createList(int n)
 		if(header->next == NULL)
 		{
 			header->next = newNode;
+			newNode->next = newNode; // circular
 		}
 		else
 		{
+			newNode->next = header->next;
 			last->next = newNode;
 		}
 
@@ -130,21 +148,30 @@ void createList(int n)
 
 	if(temp != NULL)
 	{
-		temp->next = NULL;
+		temp->next = header->next;
 	}
-}
 
+	printf("\nSuccessfully initialized all the nodes with data.\n\n");
+}
 
 void freeList(void)
 {
-	struct node *curr = header->next;
-	while(curr != NULL)
+	if(header->next == NULL)
+	{
+		new = NULL;
+		return;
+	}
+
+	struct node *first = header->next;
+	struct node *curr = first->next;
+	while(curr != first)
 	{
 		struct node *next = curr->next;
 		free(curr);
 		curr = next;
 	}
 
+	free(first);
 	header->next = NULL;
 	new = NULL;
 }
@@ -164,15 +191,16 @@ int display(struct node *head)
 
 	struct node *temp = head -> next;
 
-	//Traversing through every node and printing their data values.
-	while(temp != NULL)
+	//Traversing through the list to print all the nodes:
+	printf("\nThe List is: \n");
+	do
 	{
 		printf("[ %d ] -> ", temp -> data);
 		temp = temp -> next;
-	}
-	printf(" [ NULL ]");
+	}while(temp != header -> next);
 
-	printf("\nSuccessfully printed the list.\n\n");
+	printf(" [ FIRST NODE ]");
+	printf("\nSuccessfully printed the list!!.\n");
 
 	return 0;
 }
@@ -214,9 +242,11 @@ int insertMain()
 	}
 	else
 	{
-		printf("\nIvalid Option!!\n");
+		printf("\nInvalid Option!!");
 		return 1;
 	}
+	printf("\nSuccessfully inserted the node.\nThe list after the node insertion is: ");
+	if(display(header))  return 1;
 
 	return 0;
 }
@@ -227,7 +257,7 @@ int insertMain()
 
 int insertFront()
 {
-	struct node *temp;
+	struct node *temp = NULL;
 
 	temp = header -> next;
 
@@ -237,8 +267,16 @@ int insertFront()
 	//Linking the list to the new node that is inserted at the front position.
 	new->next = temp;
 
-	//Display the list after the insertion:
-	if(display(header))  return 1;
+	//Traversing upto the last node to link the last node to the first one.
+	temp = header -> next;
+
+	do
+	{
+		temp = temp -> next;
+	}while(temp -> next != new->next);
+	
+
+	temp -> next = header -> next;
 
 	return 0;
 }
@@ -274,7 +312,7 @@ int insertPos()
 
 	temp = header -> next;
 
-	while(temp != NULL && j < pos)
+	while(temp -> next != header -> next && j < pos)
 	{
 		prev = temp;
 		temp = temp -> next;
@@ -299,23 +337,20 @@ int insertPos()
 
 int insertEnd()
 {
-	struct node *temp;
+	struct node *temp = NULL;
 
 	temp = header -> next;
 
 
 	//Traversing till the last node:
-	while(temp -> next != NULL)
+	do 
 	{
 		temp = temp -> next;
-	}
+	}while(temp -> next != header -> next);
 
 	//Inserting the node at the end:
 	temp -> next = new;
-	new->next = NULL;
-
-	//Display the new list:
-	if(display(header))  return 1;
+	new->next = header -> next;
 
 	return 0;
 		

@@ -1,16 +1,15 @@
-/** ===== Single Linked List: Linear Search ===== **/
+/** ===== Double Linked List: Reversing of the list  ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program shows the implementation of the search operation on a Single Linked List.
+ * This program shows the implementation of the reverse operation on a Double Linked List.
  * In this we do the following processes:
  	* Creation of the List.
 	* Initialization of the List with certain values.
 	* Display the List.
-	* Then, searches for an element specified by the user in the list.
- * At last, prints the element position if it is found. 
- * If the element is not found then prints a message that tells that element was not found.
+	* Then, reverses the list.
+ * At last, prints the reversed list. 
 */
 
 
@@ -23,10 +22,11 @@
 /* ---- Node Definition ---- */
 struct node {
 	int data;
+	struct node *prev;
 	struct node *next;
 };
 
-struct node *header = NULL, *N = NULL, new;		//Declaraing here for global access.
+struct node *header = NULL, *N = NULL;		//Declaraing here for global access.
 int n;
 
 
@@ -35,7 +35,8 @@ struct node* createNode(int value);
 void createList(int n);
 void freeList(void);
 int display(struct node *);
-int search(void);
+int reverse(void);
+
 
 
 /** ===== Main Function ===== **/
@@ -72,10 +73,13 @@ int main()
 		status = 1;
 		goto cleanup;
 	}
-	search();
+	if(reverse())
+	{
+		status = 1;
+	}
 
 	cleanup:
-	//Free memory:
+	//free the allocated memory:
 	freeList();
 	free(header);  header = NULL;
 
@@ -98,6 +102,7 @@ struct node* createNode(int value)
 	}
 
 	newNode->data = value;
+	newNode->prev = NULL;
 	newNode->next = NULL;
 
 	return newNode;
@@ -129,6 +134,7 @@ void createList(int n)
 		}
 		else
 		{
+			newNode->prev = last;
 			last->next = newNode;
 		}
 
@@ -174,10 +180,10 @@ int display(struct node *head)
 	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
-		printf("[ %d ] -> ", temp -> data);
+		printf("[ %d ] -> <- ", temp -> data);
 		temp = temp -> next;
 	}
-	printf(" [ NULL ]");
+	printf("\b\b\b [ NULL ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 
@@ -185,34 +191,30 @@ int display(struct node *head)
 }
 
 
-//search():
-//This function takes an element from the user and searches for the element in the list.
+//reverse():
+//This function reverses the list.
 
-int search()
+int reverse()
 {
-	int key, i = 0;
-	
-	//Taking the element from the user:
-	printf("\nEnter the element that is to be searched: ");
-	scanf("%d", &key);
+	struct node *prev = NULL, *curr = NULL, *next = NULL;
 
-	struct node *temp = NULL;
-	temp = header;
+	//Store the first node in curr:
+	curr = header -> next;
 
-	//Traversing through the entire list:
-	while(temp -> next != NULL)
+	while(curr != NULL)
 	{
-		if(temp -> data == key)		//Comparing the node with key.
-		{
-			printf("\n%d is found in the list at the position: %d\n", key, i);
-			
-			return 0;
-		}
-		i += 1;
-		temp = temp -> next;
-	}	
+		next = curr -> next;
+		curr -> next = prev;
+		curr -> prev = prev;
+		prev = curr;
+		curr = next;
+	}
 
-	printf("\nElement was not found.\n");
-	
-	return 1;
+	//Linking the last node to the header node:
+	header -> next = prev;
+
+	printf("\nThe reversed list is: ");
+	if(display(header)) return 1;
+
+	return 0;
 }

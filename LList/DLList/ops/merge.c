@@ -1,9 +1,9 @@
-/** ===== Singly Linked List : Merge Operation ===== **/
+/** ===== Double Linked List : Merge Operation ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program creates a singly linked lists.(Dynamically allocates the memory for the lists)
+ * This program creates a doubly linked lists.(Dynamically allocates the memory for the lists)
  * Initializes their data elements with the user given values.
  * And, display these two lists.
  * Creates a new list that is a merged list of the both list.
@@ -20,6 +20,7 @@
 /* ---- Node Definition ---- */
 struct node {
 	int data;
+	struct node *prev;
 	struct node *next;
 };
 
@@ -139,6 +140,7 @@ struct node* createNode(int value)
 	}
 
 	newNode->data = value;
+	newNode->prev = NULL;
 	newNode->next = NULL;
 
 	return newNode;
@@ -170,6 +172,7 @@ void createList(int n)
 		}
 		else
 		{
+			newNode->prev = last;
 			last->next = newNode;
 		}
 
@@ -215,10 +218,10 @@ int display(struct node *head)
 	//Traversing through every node and printing their data values.
 	while(temp != NULL)
 	{
-		printf("[ %d ] -> ", temp -> data);
+		printf("[ %d ] -> <- ", temp -> data);
 		temp = temp -> next;
 	}
-	printf(" [ NULL ]");
+	printf("\b\b\b [ NULL ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 
@@ -234,7 +237,7 @@ int merge(struct node *h1, struct node *h2)
 	//Linking the first list to the header:
 	header3->next = h1->next;
 
-	struct node *temp = NULL;
+	struct node *temp = NULL, *h2First = NULL;
 	temp = header3->next;
 
 	//Traversing till the last node of the first list:
@@ -243,8 +246,11 @@ int merge(struct node *h1, struct node *h2)
 		temp = temp -> next;
 	}
 
+	h2First = h2 -> next;		//First node of the second list.
+
 	//Linking last node of list1 to first node of list2:
-	temp -> next = h2->next;
+	temp -> next = h2First;
+	h2First -> prev = temp;
 
 	return 0;
 }
