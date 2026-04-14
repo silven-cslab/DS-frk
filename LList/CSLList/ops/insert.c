@@ -158,6 +158,7 @@ void freeList(void)
 {
 	if(header->next == NULL)
 	{
+		new = NULL;
 		return;
 	}
 
@@ -166,18 +167,13 @@ void freeList(void)
 	while(curr != first)
 	{
 		struct node *next = curr->next;
-		if(curr != new)
-		{
-			free(curr);
-		}
+		free(curr);
 		curr = next;
 	}
 
-	if(first != new)
-	{
-		free(first);
-	}
+	free(first);
 	header->next = NULL;
+	new = NULL;
 }
 
 

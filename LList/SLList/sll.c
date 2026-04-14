@@ -244,13 +244,11 @@ void freeList(void)
 	while(curr != NULL)
 	{
 		struct node *next = curr->next;
-		if(curr != new)
-		{
-			free(curr);
-		}
+		free(curr);
 		curr = next;
 	}
 	header->next = NULL;
+	new = NULL;
 }
 
 
