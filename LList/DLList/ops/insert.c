@@ -173,7 +173,7 @@ int display(struct node *head)
 		printf("[ %d ] -> <- ", temp -> data);
 		temp = temp -> next;
 	}
-	printf("\b\b [ NULL ]");
+	printf("\b\b\b [ NULL ]");
 
 	printf("\nSuccessfully printed the list.\n\n");
 
