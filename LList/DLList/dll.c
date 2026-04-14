@@ -63,7 +63,7 @@ int main()
 	char ch2;
 
 
-	printf("\n\n ====== Singly Linked List : Operations Implementations ====== \n\n");
+	printf("\n\n ====== Doubly Linked List : Operations Implementations ====== \n\n");
 	printf("\n   -------------------------------------------------------------   \n");
 	printf("\n\nLet us start by creating a list and assigning each node some values...\n");
 	printf("Enter the no. of nodes in the list: ");
