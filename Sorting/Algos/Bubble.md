@@ -7,7 +7,7 @@
 
 ### Steps:
     
-    1. if n > 1 then
+    1. if n < 1 then
 
         1.1. print "No elements for sorting"
 
