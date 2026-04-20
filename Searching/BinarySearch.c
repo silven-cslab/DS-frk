@@ -37,14 +37,25 @@ int main()
 	printf("\nEnter the element that is to be searched: ");
 	scanf("%d", &key);
 
+	printf("\nThe elements are: ");
+	for(i=0;i<n;i++)
+	{
+		printf("%d ", a[i]);
+	}
+
+	printf("\n\n===============\nChecks:\n");
+
 	//Main Logic:
 	l=0;		//Lower Bound
 	u=n-1;
 	while(l<=u)
 	{
 		mid = (l+u)/2;
+		printf("%d == %d : ", key, a[mid]);
 		if(key == a[mid])
 		{
+			printf("True\n");
+			printf("\n===============");
 			printf("\n\n%d is found at position: %d\n", key, mid);		//Element Found.
 			return 0;
 		}
@@ -56,8 +67,10 @@ int main()
 		{
 			l = mid+1;
 		}
+		printf("False\n");
 	}
 
+	printf("\n===============");
 	printf("\n\n%d is not found in the array.\n", key);	//Element not Found.
 
 	return 1;
