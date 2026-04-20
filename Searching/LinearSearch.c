@@ -37,17 +37,30 @@ int main()
 	printf("\nEnter the element that is to be searched: ");		//Taking the key element from the user.
 	scanf("%d", &key);
 
+	printf("\nThe elements are: ");
+	for(i=0;i<n;i++)
+	{
+		printf("%d ", a[i]);
+	}
+
+	printf("\n\n===============\nChecks:\n");
+
 	//Main logic:
 	for(i=0;i<n;i++)
 	{
+		printf("%d == %d : ", key, a[i]);
 		if(a[i]==key)
 		{
+			printf("True\n");
+			printf("\n===============");
 			printf("\n%d is found at position %d\n\n", key, i);		//Element found.
 			return 0;
 		}
+		printf("False\n");
 	}
 
-	printf("\n%d is not found in the array.\n\n");		//Element not found.
+	printf("\n===============");
+	printf("\n%d is not found in the array.\n\n", key);		//Element not found.
 
 	return 1;
 }
