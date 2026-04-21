@@ -208,8 +208,7 @@ int PolyAdd(struct node *P, struct node *Q, struct node *R)
 	struct node *Pptr = NULL, *Qptr = NULL, *Rptr = NULL;
 	Pptr = P -> next;
 	Qptr = Q -> next;
-	Rptr = R -> next;
-	R -> next = Rptr;
+	Rptr = R;
 
 	//Traversing through the lists and adding up the coefficients of the terms:
 	while((Pptr != NULL) && (Qptr != NULL))
@@ -220,18 +219,21 @@ int PolyAdd(struct node *P, struct node *Q, struct node *R)
 			Pptr = Pptr -> next;
 			Qptr = Qptr -> next;
 			Rptr -> next = new;
+			Rptr = new;
 		}
 		else if((Pptr -> exp) > (Qptr -> exp))
 		{
 			struct node *new = createNode(Pptr -> coeff, Pptr -> exp);
 			Pptr = Pptr -> next;
 			Rptr -> next = new;
+			Rptr = new;
 		}
 		else
 		{
 			struct node *new = createNode(Qptr -> coeff, Qptr -> exp);
 			Qptr = Qptr -> next;
 			Rptr -> next = new;
+			Rptr = new;
 		}
 	}
 
@@ -241,6 +243,7 @@ int PolyAdd(struct node *P, struct node *Q, struct node *R)
 		{
 			struct node *new = createNode(Pptr -> coeff, Pptr -> exp);
 			Rptr -> next = new;
+			Rptr = new;
 			Pptr = Pptr -> next;
 		}
 	}
@@ -251,6 +254,7 @@ int PolyAdd(struct node *P, struct node *Q, struct node *R)
 		{
 			struct node *new = createNode(Qptr -> coeff, Qptr -> exp);
 			Rptr -> next = new;
+			Rptr = new;
 			Qptr = Qptr -> next;
 		}
 	}
