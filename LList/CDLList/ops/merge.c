@@ -1,9 +1,9 @@
-/** ===== Circular Singly Linked List : Merge Operation ===== **/
+/** ===== Circular Double Linked List : Merge Operation ===== **/
 
 
 /** ===== Documentation ===== **/
 /*
- * This program creates a circular singly linked lists.(Dynamically allocates the memory for the lists)
+ * This program creates a circular double linked lists.(Dynamically allocates the memory for the lists)
  * Initializes their data elements with the user given values.
  * And, display these two lists.
  * Creates a new list that is a merged list of the both list.
