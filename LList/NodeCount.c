@@ -37,6 +37,7 @@ int main()
 
 	//Allocating the memory:
 	header = malloc(sizeof(struct node));
+	header -> next = NULL;
 
 	//Checking if the allocation failed:
 	if(header == NULL)
@@ -102,9 +103,9 @@ int createList(struct node *head, int n)
 		return 1;
 	}
 
+	printf("Enter the values: ");
 	for(i=0;i<n;i++)
 	{
-		printf("Enter the values: ");
 		scanf("%d", &value);
 
 		struct node *new = createNode(value);
@@ -113,10 +114,12 @@ int createList(struct node *head, int n)
 		{
 			head -> next = new;
 		}
+
 		else
 		{
 			last -> next = new;
 		}
+
 		last = new;
 		temp = new;
 	}
@@ -136,7 +139,7 @@ int createList(struct node *head, int n)
 int display(struct node *head)
 {
 	//Checking if list is empty:
-	if(head -> next = NULL)
+	if(head -> next == NULL)
 	{
 		printf("\nNo elements to display!!\n\n");
 		return 1;
@@ -160,7 +163,7 @@ int display(struct node *head)
 
 int NodeCount(struct node *head)
 {
-	int count;
+	int count = 0;
 
 	struct node *temp = head;
 
@@ -170,5 +173,5 @@ int NodeCount(struct node *head)
 		temp = temp -> next;
 	}
 
-	return count;
+	return count - 1;
 }
