@@ -27,7 +27,8 @@ struct node {
 struct node* createNode(int);
 int createStk(struct node*, struct node*);
 int display(struct node*, struct node*);
-int PUSH(struct node *, struct node*);
+int PUSH(struct node*);
+void freeList(struct node*);
 
 
 /** ==== Main Function ==== **/
@@ -54,10 +55,15 @@ int main()
 	if(display(header, top))  return 1;
 
 	//Now pushing a new item to the stack:
-	if(PUSH(header, top))  return 1;
+	if(PUSH(top))  return 1;
 
 	//Now displaying the modified stack:
 	if(display(header, top))  return 1;
+
+	//Cleanup:
+	freeList(header);
+	free(top);  top = NULL;
+	free(header);  header = NULL;
 
 
 	return 0;
@@ -177,7 +183,7 @@ int display(struct node *head, struct node *top)
 //PUSH():
 //This function pushes a new item to the stack.
 
-int PUSH(struct node *head, struct node *top)
+int PUSH(struct node *top)
 {
 	int val;
 
@@ -193,3 +199,21 @@ int PUSH(struct node *head, struct node *top)
 
 	return 0;
 }
+
+
+//freeList():
+//This function frees up the allocated memory.
+
+void freeList(struct node *header)
+{
+        struct node *curr = header->next;
+        while(curr != NULL)
+        {
+                struct node *next = curr->next;
+                free(curr);
+                curr = next;
+        }
+
+        header->next = NULL;
+}
+
