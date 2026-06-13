@@ -1,0 +1,123 @@
+=== Test Run 1: Normal insertion/deletion operations ===
+
+===== Experiment 1: Singly Linked List =====
+Enter initial number of nodes: Enter 3 node values: 
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: List: [ 10 ] -> [ 20 ] -> [ 30 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Enter value to insert at front: Inserted 5 at front.
+List: [ 5 ] -> [ 10 ] -> [ 20 ] -> [ 30 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Enter value and position (1-based): Inserted 25 at position 3.
+List: [ 5 ] -> [ 10 ] -> [ 25 ] -> [ 20 ] -> [ 30 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Enter value to insert at end: Inserted 40 at end.
+List: [ 5 ] -> [ 10 ] -> [ 25 ] -> [ 20 ] -> [ 30 ] -> [ 40 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Deleted 5 from front.
+List: [ 10 ] -> [ 25 ] -> [ 20 ] -> [ 30 ] -> [ 40 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Enter position to delete (1-based): Deleted 25 from position 2.
+List: [ 10 ] -> [ 20 ] -> [ 30 ] -> [ 40 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Deleted 40 from end.
+List: [ 10 ] -> [ 20 ] -> [ 30 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Exiting...
+
+=== Test Run 2: Edge case with empty list deletion ===
+
+===== Experiment 1: Singly Linked List =====
+Enter initial number of nodes: 
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: List is empty. Cannot delete from front.
+
+----------- MENU -----------
+1. Display List
+2. Insert Front
+3. Insert Position
+4. Insert End
+5. Delete Front
+6. Delete Position
+7. Delete End
+8. Exit
+Enter your choice: Exiting...

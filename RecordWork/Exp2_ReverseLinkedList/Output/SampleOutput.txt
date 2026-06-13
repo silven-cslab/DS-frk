@@ -1,0 +1,52 @@
+=== Test Run 1: Iterative and recursive reverse ===
+
+===== Experiment 2: Reverse Linked List =====
+Enter number of nodes: Enter 5 node values: List created successfully.
+List: [ 1 ] -> [ 2 ] -> [ 3 ] -> [ 4 ] -> [ 5 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Reverse Iteratively
+3. Reverse Recursively
+4. Rebuild List
+5. Exit
+Enter your choice: List reversed iteratively.
+List: [ 5 ] -> [ 4 ] -> [ 3 ] -> [ 2 ] -> [ 1 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Reverse Iteratively
+3. Reverse Recursively
+4. Rebuild List
+5. Exit
+Enter your choice: List reversed recursively.
+List: [ 1 ] -> [ 2 ] -> [ 3 ] -> [ 4 ] -> [ 5 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Display List
+2. Reverse Iteratively
+3. Reverse Recursively
+4. Rebuild List
+5. Exit
+Enter your choice: Exiting...
+
+=== Test Run 2: Edge case empty list ===
+
+===== Experiment 2: Reverse Linked List =====
+Enter number of nodes: Created an empty list.
+
+----------- MENU -----------
+1. Display List
+2. Reverse Iteratively
+3. Reverse Recursively
+4. Rebuild List
+5. Exit
+Enter your choice: List is empty. Nothing to reverse.
+
+----------- MENU -----------
+1. Display List
+2. Reverse Iteratively
+3. Reverse Recursively
+4. Rebuild List
+5. Exit
+Enter your choice: Exiting...

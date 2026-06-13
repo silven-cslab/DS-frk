@@ -1,0 +1,101 @@
+=== Test Run 1: Traversal and manipulation operations ===
+
+===== Experiment 3: Linked List Traversal and Manipulation =====
+Enter number of nodes: Enter 6 node values: List created successfully.
+List: [ 11 ] -> [ 22 ] -> [ 33 ] -> [ 44 ] -> [ 55 ] -> [ 66 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: List: [ 11 ] -> [ 22 ] -> [ 33 ] -> [ 44 ] -> [ 55 ] -> [ 66 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: Total nodes: 6
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: Enter value to search: 44 found at position 4.
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: Enter position (1-based) and new value: Updated node at position 3 from 33 to 99.
+List: [ 11 ] -> [ 22 ] -> [ 99 ] -> [ 44 ] -> [ 55 ] -> [ 66 ] -> [ NULL ]
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: Middle node value: 44
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: Exiting...
+
+=== Test Run 2: Edge case empty list ===
+
+===== Experiment 3: Linked List Traversal and Manipulation =====
+Enter number of nodes: Created an empty list.
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: List is empty.
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: Enter value to search: List is empty.
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: List is empty.
+
+----------- MENU -----------
+1. Traverse and Display
+2. Count Nodes
+3. Search Value
+4. Update Value at Position
+5. Find Middle Node
+6. Exit
+Enter your choice: Exiting...
