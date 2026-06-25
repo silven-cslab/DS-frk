@@ -1,13 +1,13 @@
-/** ==== Queues: Implementation of Enqueue using Arrays ==== **/
+/** ==== Queues: Implementation of Dequeue using Arrays ==== **/
 
 
 /** ==== Documentation ==== **/
 /*
- * This program shows the implementation of enqueue operation on the Queue.
+ * This program shows the implementation of dequeue operation on the Queue.
  * This takes the size of the queue MAX from the user and creates it.
  * Takes the data for the n members of the queue.
  * Displays the queue.
- * If the queue is not empty inserts a new element.
+ * If the queue is not empty removes the element from the FRONT position.
  * And, finally displays the modified queue.
 */
 
@@ -18,7 +18,7 @@
 
 /** ==== Function Prototypes ==== **/
 int createQ(int *, int);
-int enqueue(int *, int);
+int dequeue(int *);
 int displayQ(int *);
 
 
@@ -30,7 +30,7 @@ int FRONT = -1, REAR = -1;
 /** ==== Main Function ====**/
 int main()
 {
-    int n, Q[MAX], ITEM;
+    int n, Q[MAX];
 
     printf("\nEnter the size of the Queue: ");
     scanf("%d", &n);
@@ -41,12 +41,8 @@ int main()
     //Displaying the Queue:
     if(displayQ(&Q[0]))  return 1;
 
-    //Taking the ITEM to insert:
-    printf("\nEnter the ITEM: ");
-    scanf("%d", &ITEM);
-
-    //EnQueue the ITEM:
-    if(enqueue(&Q[0], ITEM))  return 1;
+    //DeQueue the ITEM:
+    if(dequeue(&Q[0]))  return 1;
 
     //Display the modified Queue:
     if(displayQ(&Q[0]))  return 1;
@@ -87,27 +83,27 @@ int createQ(int *Q, int n)
 }
 
 
-//enqueue():
-//This function inserts the given element to the REAR position of the Queue.
+//dequeue():
+//This function removes an element from the FRONT position of the Queue.
 
-int enqueue(int *Q, int ITEM)
+int dequeue(int *Q)
 {
-    if(REAR == MAX - 1)
-    {
-        printf("\nQueue Overflow!!\n\n");
-        return 1;
-    }
     if((FRONT == -1) && (REAR == -1))
     {
-        FRONT = REAR = 0;
-        Q[REAR] = ITEM;
+        printf("\nQueue Underflow!!\n\n");
+        return 1;
+    }
+    
+    if(FRONT == REAR)
+    {
+        FRONT = REAR = -1;
     }
     else
     {
-        Q[++REAR] = ITEM;
+        FRONT++;
     }
-    
-    printf("\nSuccessfully Enqueued the ITEM to the Queue.\n\n");
+
+    printf("\nSuccessfully Dequeued from the Queue.\n\n");
     return 0;
 }
 
