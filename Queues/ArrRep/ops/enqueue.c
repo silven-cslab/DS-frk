@@ -81,7 +81,7 @@ int createQ(int *Q, int n)
     FRONT = 0;
     REAR = n-1;
 
-    printf("\nSuccessfully created he Queue.\n\n");
+    printf("\nSuccessfully created the Queue.\n\n");
 
     return 0;
 }
