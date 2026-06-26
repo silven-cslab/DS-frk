@@ -112,7 +112,7 @@ struct node* createNode(int value)
 
 void createQ(struct node *FRONT, int n)
 {
-	struct node *temp, *last = NULL;
+	struct node *temp = NULL, *last = NULL;
 
 	printf("\nEnter the values: ");
 	for(int i = 0; i < n; i++)

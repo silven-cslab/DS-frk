@@ -1,14 +1,18 @@
-/** ==== Dequeues: Implementation of Enqueue using Linked Lists ==== **/
+/** ==== Dequeues: Implementation  using Linked Lists ==== **/
 
 
 /** ==== Documentation ==== **/
 /*
- * This program shows the implementation of enqueue operation on the Queue.
+ * This program shows the implementation the Queue.
  * Takes the data for the n members of the queue.
  * Displays the queue.
  * If the queue is not empty inserts a new element at REAR.
  * And, finally displays the modified queue.
  * If the queue is not empty inserts a new element at FRONT.
+ * And, finally displays the modified queue.
+ * If the queue is not empty removes the element from the FRONT position.
+ * And, finally displays the modified queue.
+ * If the queue is not empty removes the element from the REAR position.
  * And, finally displays the modified queue.
 */
 
@@ -37,6 +41,8 @@ void freeQ(struct node *);
 int displayQ(struct node *);
 int enqueueREAR(struct node *, int);
 int enqueueFRONT(struct node *, int);
+int dequeueFRONT(struct node *);
+int dequeueREAR(struct node *);
 
 
 
@@ -80,6 +86,18 @@ int main()
 
 	//Enqueue the ITEM:
 	if(enqueueFRONT(FRONT, ITEM))  return 1;
+
+	//Display the modified queue:
+	displayQ(FRONT);
+
+	//Dequeue the memeber of the queue:
+	if(dequeueFRONT(FRONT))  return 1;
+
+	//Display the modified queue:
+	displayQ(FRONT);
+
+	//Dequeue the memeber of the queue:
+	if(dequeueREAR(REAR))  return 1;
 
 	//Display the modified queue:
 	displayQ(FRONT);
@@ -217,6 +235,7 @@ int enqueueREAR(struct node* REAR, int ITEM)
 
 	struct node *temp = REAR -> next;
 	temp -> next = new;
+	new -> prev = temp;
 	REAR -> next = new;
 
 	printf("\nSuccessfully Enqueued a member to the REAR position of the queue.\n\n");
@@ -239,8 +258,78 @@ int enqueueFRONT(struct node* FRONT, int ITEM)
 
 	struct node *temp = FRONT -> next;
 	new -> next = temp;
+	temp -> prev = new;
 	FRONT -> next = new;
 
 	printf("\nSuccessfully Enqueued a member to the FRONT position ov the queue.\n\n");
+	return 0;
+}
+
+
+//dequeueFRONT():
+//This function removes an element from front position of the queue.
+
+int dequeueFRONT(struct node* FRONT)
+{
+	struct node *last = NULL;
+
+	//Checking the edge case:
+	if(FRONT -> next == NULL)
+	{
+		printf("\nQueue Underflow!!\n\n");
+		return 1;
+	}
+
+	last = FRONT -> next;
+	FRONT -> next = last -> next;
+
+	if(FRONT -> next == NULL)
+	{
+		REAR -> next = NULL;
+	}
+	else
+	{
+		FRONT -> next -> prev = NULL;
+	}
+
+	//free the memory of the dequeued element:
+	free(last);  last = NULL;
+
+	printf("\nSuccessfully Dequeued a member from the queue.\n\n");
+	return 0;
+}
+
+
+//dequeueREAR():
+//This function removes an element from rear position of the queue.
+
+int dequeueREAR(struct node* REAR)
+{
+	struct node *last = NULL;
+
+	//Checking the edge case:
+	if(FRONT -> next == NULL)
+	{
+		printf("\nQueue Underflow!!\n\n");
+		return 1;
+	}
+
+	last = REAR -> next;
+	REAR -> next = last -> prev;
+
+	if(REAR -> next != NULL)
+	{
+		REAR -> next -> next = NULL;
+	}
+
+	if(REAR -> next == NULL)
+	{
+		FRONT -> next = NULL;
+	}
+
+	//free the memory of the dequeued element:
+	free(last);  last = NULL;
+
+	printf("\nSuccessfully Dequeued a member from the queue.\n\n");
 	return 0;
 }
