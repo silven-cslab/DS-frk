@@ -209,8 +209,11 @@ int dequeueFRONT(struct node* FRONT)
 
 	last = FRONT -> next;
 	FRONT -> next = last -> next;
-	FRONT -> next -> prev = NULL;
-
+	if(FRONT -> next != NULL)
+	{
+		FRONT -> next -> prev = NULL;
+	}
+	
 	if(FRONT -> next == NULL)
 	{
 		REAR -> next = NULL;
