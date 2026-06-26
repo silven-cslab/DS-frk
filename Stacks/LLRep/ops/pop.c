@@ -180,8 +180,8 @@ int display(struct node *head, struct node *top)
 }
 
 
-//PUSH():
-//This function pushes a new item to the stack.
+//POP():
+//This function pops an item from the stack.
 
 int POP(struct node *head, struct node *top)
 {
@@ -203,7 +203,7 @@ int POP(struct node *head, struct node *top)
 	} 
 	else 
 	{
-		header -> next = NULL; 
+		head -> next = NULL; 
 	}
 	
 	free(temp);
