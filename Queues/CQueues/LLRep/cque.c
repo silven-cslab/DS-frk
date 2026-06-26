@@ -1,4 +1,4 @@
-/** ==== Circular Queues: Implementation of Enqueue using Linked Lists ==== **/
+/** ==== Circular Queues: Implementation  using Linked Lists ==== **/
 
 
 /** ==== Documentation ==== **/
@@ -8,6 +8,7 @@
  * Displays the queue.
  * If the queue is not empty inserts a new element.
  * And, finally displays the modified queue.
+ * Removes an element from the queue and displays it.
 */
 
 
