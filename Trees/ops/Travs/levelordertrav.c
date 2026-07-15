@@ -109,20 +109,26 @@ struct node *createTree(int *n)
 
 void levelorder(struct node *root)
 {
+	if(root == NULL)
+	{
+		printf("\nTree is empty!!\n\n");
+		return;
+	}
+
 	enqueue(root -> data);
 	
-	while(FRONT -> next != NULL)
+	while(FRONT -> next != NULL || REAR -> next != NULL)
 	{
 		printf("%d ", dequeue());
 
 		if(root -> left != NULL)
 		{
-			levelorder(root -> left);
+			enqueue(root -> left -> data);
 		}
 
 		if(root -> right != NULL)
 		{
-			levelorder(root -> right);
+			enqueue(root -> right -> data);
 		}
 	}
 }
