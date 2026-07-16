@@ -117,7 +117,7 @@ void levelorder(struct node *root)
 
 	enqueue(root -> data);
 	
-	while(FRONT -> next != NULL || REAR -> next != NULL)
+	while(FRONT -> next != NULL && REAR -> next != NULL)
 	{
 		printf("%d ", dequeue());
 
@@ -155,13 +155,19 @@ void enqueue(int val)
 
 		if(FRONT == NULL || REAR == NULL)
 		{
-			printf("\nMemeory allocation failed!!\n\n");
+			printf("\nMemory allocation failed!!\n\n");
 			return;
 		}
 
 		FRONT -> next = new, REAR -> next = new;
 		return;
 	}	
+	
+	if(FRONT -> next == NULL && REAR -> next == NULL)
+	{
+		FRONT -> next = new, REAR -> next = new;
+		return;
+	}
 	
 	REAR -> next -> next = new;
 	REAR -> next = new;
@@ -180,6 +186,12 @@ int dequeue()
 	}
 
 	struct nodeQ *temp = FRONT -> next;
+	
+	if(FRONT -> next == REAR -> next)
+	{
+		REAR -> next = NULL;
+	}
+
 	FRONT -> next = FRONT -> next -> next;
 
 	int val = temp -> data;
