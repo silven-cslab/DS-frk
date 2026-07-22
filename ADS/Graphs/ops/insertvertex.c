@@ -23,29 +23,43 @@ struct node {
 
 // -- Graph Node Definition --
 struct graph {
+	int vertices;
 	struct node **adjList;
-	struct graph *next;
 };
 
 
 // -- Function Protottypes --
 struct node *createNode(int);
 struct graph *createGraph(int );
-struct graph *insertVertex(int, int, struct graph*);
-struct graph *insertEdge(int, int, struct graph*);
+struct graph *insertVertex(int, struct graph*);
+struct graph *insertEdge(struct graph*);
+int printAdjList(struct graph*);
 
 
 /* Main Function */
 int main()
 {
-	int n;
+	int n, i;
 
 	//Taking the no. of vertices:
 	printf("\nEnter the total no. of vertices of the graph: ");
 	scanf("%d", &n);
 
 	//Creating the Graph:
-	struct graph *graph = createGraph(n);
+	struct graph *Graph = createGraph(n);
+
+	//Printing the adjacency list of the graph:
+	printAdjList(Graph);
+
+	//Establishing the connections between the vertices of the graph:
+	for(i=0;i<3;i++)
+	{
+		Graph = insertEdge(Graph);
+	}
+
+	//Print the modified graph:
+	printAdjList(Graph);
+
 
 	return 0;
 }
@@ -79,15 +93,34 @@ struct node* createNode(int value)
 
 struct graph *createGraph(int vertices)
 {
-	int i, vertex;
-	struct graph *Graph = malloc(vertices * sizeof(struct graph));
+	int i;
+	//Allocating memory for the Graph:
+	struct graph *Graph = malloc(sizeof(struct graph));
 
+	//Checking for errors:
+	if(Graph == NULL)
+	{
+		printf("\nMemory allocation failed for the Graph!!\n\n");
+		return NULL;
+	}
+
+	Graph -> vertices = vertices;
+
+	Graph -> adjList = malloc(vertices * sizeof(struct node));
+
+	//Again Checking for errors:
+	if(Graph -> adjList == NULL)
+	{
+		printf("\nMemory allocation failed for the adjacency list!!\n\n");
+		return NULL;
+	}
+
+	//First init adjList of the Graph to NULL and read vertices:
 	printf("\nEnter all of the values of the graph: ");
 	for(i=0;i<vertices;i++)
 	{
-		scanf("%d", &vertex);
-
-		Graph = insertVertex(i, vertex, Graph);
+		Graph -> adjList[i] = NULL;
+		Graph = insertVertex(i, Graph);
 	}
 
 	return Graph;
@@ -97,12 +130,106 @@ struct graph *createGraph(int vertices)
 //insertVertex():
 //This helper function inserts the vertex to the graph(Adjacency List).
 
-struct graph *insertVertex(int vIndex, int vertex, struct graph* Graph)
+struct graph *insertVertex(int vIndex, struct graph* Graph)
 {
-	 
-	 Graph -> adjList[vIndex] -> data = vertex;
-	 Graph -> adjList[vIndex] -> next = NULL;
+	int vertex;
 
-	 return Graph;
+	scanf("%d", &vertex);
+	 
+	struct node *vertexNode = createNode(vertex);
+	Graph -> adjList[vIndex] = vertexNode;
+
+	return Graph;
 }
+
+
+//printAdjList():
+//This helper function prints the adjaceny list representation of the Graph.
+
+int printAdjList(struct graph *Graph)
+{
+	int i;
+
+	printf("\n=== Graph : Adjacency List ===\n\n");
+	for(i=0;i<(Graph -> vertices);i++)
+	{
+		struct node *temp = Graph -> adjList[i];
+
+		printf("%d : ", temp -> data);
+		while(temp != NULL)
+		{
+			printf("%d -> ", temp -> data);
+
+			if(temp -> next == NULL)
+			{
+				printf("\b\b\b  \n");
+			}
+
+			temp = temp -> next;
+		}
+	}
+	printf("\n==============================\n\n");
+
+	return 0;
+}
+
+
+//insertEdge():
+//This helper function creates an association between two specified indexes.
+
+struct graph *insertEdge(struct graph *Graph)
+{
+	int V1, V2, i, V1i = -1, V2i = -1;
+	
+	printf("\nEnter the vertices V1 & V2 between which an association must be established: ");
+	scanf("%d%d", &V1, &V2);
+
+	for(i=0;i<(Graph -> vertices);i++)
+	{
+		V1i = -1;
+		if(V1 == Graph -> adjList[i] -> data)
+		{
+			V1i = i;
+			break;
+		}
+	}
+
+	for(i=0;i<(Graph -> vertices);i++)
+	{
+		V2i = -1;
+		if(V2 == Graph -> adjList[i] -> data)
+		{
+			V2i = i;
+			break;
+		}
+	}
+
+	if((V1i == -1) || (V2i == -1))
+	{
+		printf("\nVertex Not found!\n");
+		return NULL;
+	}
+
+	//Adjacency to V1:
+	struct node* newV2 = createNode(V2);
+	struct node *temp1 = Graph -> adjList[V1i];
+	while(temp1 -> next != NULL)
+	{
+		temp1 = temp1 -> next;
+	}
+	temp1 -> next = newV2;
+
+	//Adjacency to V2:
+	struct node* newV1 = createNode(V1);
+	struct node *temp2 = Graph -> adjList[V2i];
+	while(temp2 -> next != NULL)
+	{
+		temp2 = temp2 -> next;	
+	}
+	temp2 -> next = newV1;
+
+	return Graph;
+	
+}
+
 
