@@ -106,7 +106,7 @@ struct graph *createGraph(int vertices)
 
 	Graph -> vertices = vertices;
 
-	Graph -> adjList = malloc(vertices * sizeof(struct node));
+	Graph -> adjList = malloc(vertices * sizeof(struct node *));
 
 	//Again Checking for errors:
 	if(Graph -> adjList == NULL)
@@ -202,12 +202,12 @@ struct graph *insertEdge(struct graph *Graph)
 			V2i = i;
 			break;
 		}
-	}
+	}i
 
 	if((V1i == -1) || (V2i == -1))
 	{
 		printf("\nVertex Not found!\n");
-		return NULL;
+		return Graph;
 	}
 
 	//Adjacency to V1:
