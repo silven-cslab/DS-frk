@@ -37,6 +37,8 @@ struct graph *insertEdge(int, int, struct graph* );
 void printadjList(struct graph* );
 struct graph *deleteEdge(int, int, struct graph* );
 struct node *delete(struct node *, int);
+struct graph *deleteVertex(struct graph *, int);
+void destroyGraph(struct graph *);
 
 
 /* Main Function */
@@ -76,6 +78,17 @@ int main()
 	//Print the modified Graph:
 	printadjList(Graph);
 
+	//Delete the vertex:
+	printf("\nEnter the vertex that is to be deleted: ");
+	scanf("%d", &V1);
+
+	Graph = deleteVertex(Graph, V1);
+
+	//Print the modified Graph:
+	printadjList(Graph);
+
+	//Destory Graph:
+	destroyGraph(Graph);
 
 	return 0;
 }
@@ -245,7 +258,7 @@ void printadjList(struct graph *Graph)
 
 			if(temp -> next == NULL)
 			{
-				printf("\b\b\b \n");
+				printf("\b\b\b  \n");
 			}
 			temp = temp -> next;
 		}
@@ -307,13 +320,15 @@ struct graph *deleteEdge(int V1, int V2, struct graph *Graph)
 
 struct node *delete(struct node *VadjList, int V)
 {
-	struct node *temp = VadjList;
+	int found = 1;
+	struct node *temp = VadjList -> next;
 
-	struct node *prev = NULL;
-	while(temp -> next != NULL)
+	struct node *prev = VadjList;
+	while(temp != NULL)
 	{
 		if(temp -> data == V)
 		{
+			found = 0;
 			break;
 		}
 
@@ -327,10 +342,88 @@ struct node *delete(struct node *VadjList, int V)
 		return VadjList;
 	}
 
-	prev -> next = temp -> next;
+	if(found == 0)
+	{
+		prev -> next = temp -> next;
+		free(temp);
+	}
 
 	return VadjList;
 }
 
 
-		
+struct graph *deleteVertex(struct graph * Graph, int V)
+{
+	int i, j, found = 1;
+
+	// Remove V from all other lists:
+	for(i = 0; i < Graph->numVertices; i++)
+	{
+    	if(Graph->adjList[i] != NULL && Graph->adjList[i]->data != V)
+    	{
+        	Graph->adjList[i] = delete(Graph->adjList[i], V);
+    	}
+	}
+
+	// Now free V's adjacency list:
+	for(i = 0; i < Graph->numVertices; i++)
+	{
+    	if(Graph->adjList[i] != NULL && Graph->adjList[i]->data == V)
+    	{
+        	struct node *temp = Graph -> adjList[i];
+
+			found = 0;
+			while(temp != NULL)
+			{
+				struct node *next = temp -> next;
+				free(temp);
+				temp = next;
+			}
+			break;
+    	}
+	}
+
+	if(found == 1)
+	{
+		printf("\nVertex not found in the graph!!\n\n");
+		return Graph;
+	}
+
+	Graph->adjList[i] = NULL;
+
+	for(j = i; j < Graph->numVertices - 1; j++)
+	{
+		Graph->adjList[j] = Graph->adjList[j + 1];
+	}
+
+	Graph->adjList[Graph->numVertices - 1] = NULL;
+	Graph->numVertices--;
+
+	return Graph;
+}
+
+
+void destroyGraph(struct graph *Graph)
+{
+    int i;
+    if(Graph == NULL)
+    {
+        printf("\nGraph doesn't exist!!\n\n");
+        return;
+    }
+
+    for(i = 0; i < (Graph->numVertices); i++)
+    {
+        struct node *temp = Graph->adjList[i];
+
+        while(temp != NULL)
+        {
+            struct node *next = temp->next;
+            free(temp);
+            temp = next;
+        }
+    }
+
+    free(Graph->adjList);
+    free(Graph);
+}

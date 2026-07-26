@@ -34,6 +34,8 @@ struct graph *createGraph(int );
 struct graph *insertVertex(int, struct graph*);
 struct graph *insertEdge(struct graph*);
 int printAdjList(struct graph*);
+void destroyGraph(struct graph *);
+
 
 
 /* Main Function */
@@ -60,6 +62,8 @@ int main()
 	//Print the modified graph:
 	printAdjList(Graph);
 
+	//Destory Graph:
+	destroyGraph(Graph);
 
 	return 0;
 }
@@ -202,7 +206,7 @@ struct graph *insertEdge(struct graph *Graph)
 			V2i = i;
 			break;
 		}
-	}i
+	}
 
 	if((V1i == -1) || (V2i == -1))
 	{
@@ -233,3 +237,27 @@ struct graph *insertEdge(struct graph *Graph)
 }
 
 
+void destroyGraph(struct graph *Graph)
+{
+    int i;
+    if(Graph == NULL)
+    {
+        printf("\nGraph doesn't exist!!\n\n");
+        return;
+    }
+
+    for(i = 0; i < (Graph->vertices); i++)
+    {
+        struct node *temp = Graph->adjList[i];
+
+        while(temp != NULL)
+        {
+            struct node *next = temp->next;
+            free(temp);
+            temp = next;
+        }
+    }
+
+    free(Graph->adjList);
+    free(Graph);
+}
