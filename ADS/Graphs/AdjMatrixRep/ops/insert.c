@@ -28,6 +28,7 @@ typedef struct {
 Graph *createGraph(int );
 Graph *insertVertex(Graph *, int );
 Graph *insertEdge(Graph *, int, int);
+void destroyGraph(Graph *);
 void printGraph(Graph *);
 
 
@@ -65,6 +66,9 @@ int main()
     }
 
     printGraph(g);
+
+    //free the graph:
+    destroyGraph(g);
 
     return 0;
 }
@@ -250,3 +254,30 @@ void printGraph(Graph *g)
     }
     printf("\n======================================\n\n");
 }
+
+
+void destroyGraph(Graph *G)
+{
+	int i;
+
+	if(G == NULL)
+	{
+		printf("\nGraph doesn't exist!!\n\n");
+		return;
+	}
+
+	//Free vertices array:
+	free(G -> vertices);
+
+	//Free the adjacency matrix:
+	for(i = 0;i<G -> V;i++)
+	{
+		if(G -> adjMatrix[i] != NULL)
+		{
+			free(G -> adjMatrix[i]);
+		}
+	}
+
+	free(G -> adjMatrix);
+	free(G);
+}	

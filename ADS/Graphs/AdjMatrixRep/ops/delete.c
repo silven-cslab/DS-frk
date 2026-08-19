@@ -30,7 +30,9 @@ Graph *createGraph(int);
 Graph *insertVertex(Graph *, int);
 Graph *insertEdge(Graph *, int, int);
 void printGraph(Graph *);
+void destroyGraph(Graph *);
 Graph *deleteEdge(Graph *, int, int);
+Graph *deleteVertex(Graph *, int);
 
 
 
@@ -83,6 +85,9 @@ int main()
 
 	printGraph(g);
 
+	destroyGraph(g);
+
+	return 0;
 }
 
 
@@ -299,3 +304,57 @@ Graph *deleteEdge(Graph *g, int V1, int V2)
 
 	return g;
 }
+
+
+Graph *deleteVertex(Graph *G, int V)
+{
+	int i, Vi = -1;
+
+	//Find the index of the Vertex:
+	for(i = 0;i<G -> V;i++)
+	{
+		if(G -> vertices[i] == V)
+		{
+			Vi = i;
+			break;
+		}
+	}
+
+	//Remove V's adjacencies from other lists:
+	for(i=0;i<G->V;i++)
+	{
+		if(G->vertices[i] != V && G->adjMatrix[i][Vi] == 1)
+		{
+			G -> adjMatrix[i][Vi] = 1;
+		}
+	}
+
+	//Now remove the row related to vertex that is to be deleted:
+}
+
+
+void destroyGraph(Graph *G)
+{
+	int i;
+
+	if(G == NULL)
+	{
+		printf("\nGraph doesn't exist!!\n\n");
+		return;
+	}
+
+	//Free vertices array:
+	free(G -> vertices);
+
+	//Free the adjacency matrix:
+	for(i = 0;i<G -> V;i++)
+	{
+		if(G -> adjMatrix[i] != NULL)
+		{
+			free(G -> adjMatrix[i]);
+		}
+	}
+
+	free(G -> adjMatrix);
+	free(G);
+}	
