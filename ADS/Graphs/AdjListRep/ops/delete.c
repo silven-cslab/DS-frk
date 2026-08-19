@@ -303,6 +303,7 @@ struct graph *deleteVertex(struct graph * Graph, int V)
 	//Shift the lists that are after the deleted list:
 	for(j = i; j < Graph->V - 1; j++)
 	{
+		Graph->vertices[j] = Graph->vertices[j + 1];
 		Graph->adjList[j] = Graph->adjList[j + 1];
 	}
 
