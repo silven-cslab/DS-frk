@@ -34,7 +34,9 @@ struct graph *createGraph(int);
 struct graph *insertVertex(struct graph *, int);
 struct graph *insertEdge(int, int, struct graph *);
 struct graph *deleteEdge(int, int, struct graph *);
+struct graph *deleteVertex(struct graph *, int);
 int printadjList(struct graph *);
+void destroyGraph(struct graph *);
 
 
 /*- Miscellaneous Functions -*/
@@ -90,6 +92,21 @@ int main()
 	}
 
 	if(printadjList(G))	return 1;
+
+	printf("\nHow many vertices you want to delete from the graph: ");
+	scanf("%d", &n);
+
+	printf("\nEnter the vertices that are to be deleted: ");
+	for(i=0;i<n;i++)
+	{
+		scanf("%d", &v);
+		G = deleteVertex(G, v);
+	}
+
+	if(printadjList(G))	return 1;
+
+	//free the graph:
+	destroyGraph(G);
 
 	return 0;
 }
@@ -244,6 +261,84 @@ int printadjList(struct graph *G)
 }
 
 
+struct graph *deleteVertex(struct graph * Graph, int V)
+{
+	int i, j, found = 1;
+
+	// Remove V from all other lists:
+	for(i = 0; i < Graph->V; i++)
+	{
+    		if(Graph->adjList[i] != NULL && Graph->adjList[i]->data != V)
+	    	{
+	        	delete_SL_any(V, Graph->adjList[i]);
+	    	}
+	}
+
+	// Now free V's adjacency list:
+	for(i = 0; i < Graph->V; i++)
+	{
+	    	if(Graph->adjList[i] != NULL && Graph->adjList[i]->data == V)
+	    	{
+	        	struct node *temp = Graph -> adjList[i];
+	
+			found = 0;
+			while(temp != NULL)
+			{
+				struct node *next = temp -> next;
+				free(temp);
+				temp = next;
+			}
+			break;
+	    	}
+	}
+
+	if(found == 1)
+	{
+		printf("\nVertex not found in the graph!!\n\n");
+		return Graph;
+	}
+
+	Graph->adjList[i] = NULL;
+	
+	//Shift the lists that are after the deleted list:
+	for(j = i; j < Graph->V - 1; j++)
+	{
+		Graph->adjList[j] = Graph->adjList[j + 1];
+	}
+
+	Graph->adjList[Graph->V - 1] = NULL;
+	Graph->V--;
+
+	return Graph;
+}
+
+
+void destroyGraph(struct graph *Graph)
+{
+    int i;
+    if(Graph == NULL)
+    {
+        printf("\nGraph doesn't exist!!\n\n");
+        return;
+    }
+
+    for(i = 0; i < (Graph->V); i++)
+    {
+        struct node *temp = Graph->adjList[i];
+
+        while(temp != NULL)
+        {
+            struct node *next = temp->next;
+            free(temp);
+            temp = next;
+        }
+    }
+
+    free(Graph->adjList);
+    free(Graph);
+}
+
+
 struct node *createNode(int val)
 {
 	struct node *newNode = malloc(sizeof(struct node));
@@ -322,7 +417,6 @@ int delete_SL_any(int V, struct node *adjList)
 	}
 	else
 	{
-		printf("\nEdge not found!!\n\n");
 		return found;
 	}
 	free(deltemp);
