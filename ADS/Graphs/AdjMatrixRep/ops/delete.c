@@ -308,28 +308,102 @@ Graph *deleteEdge(Graph *g, int V1, int V2)
 
 Graph *deleteVertex(Graph *G, int V)
 {
-	int i, Vi = -1;
+	int i, j, Vi = -1;
 
-	//Find the index of the Vertex:
-	for(i = 0;i<G -> V;i++)
+	if(G == NULL)
 	{
-		if(G -> vertices[i] == V)
+		printf("\nGraph doesn't exist!!\n\n");
+		return NULL;
+	}
+
+	// Find the index of the vertex to be deleted:
+	for(i = 0; i < G->V; i++)
+	{
+		if(G->vertices[i] == V)
 		{
 			Vi = i;
 			break;
 		}
 	}
 
-	//Remove V's adjacencies from other lists:
-	for(i=0;i<G->V;i++)
+	if(Vi == -1)
 	{
-		if(G->vertices[i] != V && G->adjMatrix[i][Vi] == 1)
+		printf("\nVertex not found.\n\n");
+		return G;
+	}
+
+	
+	//Shift the vertices after Vi one position to the left.
+	for(i = Vi; i < G->V - 1; i++)
+	{
+		G->vertices[i] = G->vertices[i + 1];
+	}
+
+	
+	//Remove the column Vi from every row.
+	for(i = 0; i < G->V; i++)
+	{
+		for(j = Vi; j < G->V - 1; j++)
 		{
-			G -> adjMatrix[i][Vi] = 1;
+			G->adjMatrix[i][j] = G->adjMatrix[i][j + 1];
 		}
 	}
 
-	//Now remove the row related to vertex that is to be deleted:
+	
+	//Free the row corresponding to the deleted vertex.
+	free(G->adjMatrix[Vi]);
+
+	
+	//Shift the remaining row pointers one position up.
+	for(i = Vi; i < G->V - 1; i++)
+	{
+		G->adjMatrix[i] = G->adjMatrix[i + 1];
+	}
+
+	
+	G->V--;
+
+	
+	//Resize the vertices array.
+	int *tempVertices = realloc(G->vertices, G->V * sizeof(int));
+
+	if(G->V > 0 && tempVertices == NULL)
+	{
+		printf("\nMemory reallocation failed!!\n\n");
+		return G;
+	}
+
+	G->vertices = tempVertices;
+
+	
+	//Resize the array of row pointers.
+	int **tempMatrix = realloc(G->adjMatrix, G->V * sizeof(int *));
+
+	if(G->V > 0 && tempMatrix == NULL)
+	{
+		printf("\nMemory reallocation failed!!\n\n");
+		return G;
+	}
+
+	G->adjMatrix = tempMatrix;
+
+	
+	//Resize every remaining row.
+	for(i = 0; i < G->V; i++)
+	{
+		int *tempRow = realloc(G->adjMatrix[i],
+							   G->V * sizeof(int));
+
+		if(G->V > 0 && tempRow == NULL)
+		{
+			printf("\nMemory reallocation failed!!\n\n");
+			return G;
+		}
+
+		G->adjMatrix[i] = tempRow;
+	}
+
+	return G;
 }
 
 
