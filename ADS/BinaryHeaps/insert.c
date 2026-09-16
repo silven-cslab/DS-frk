@@ -53,8 +53,8 @@ int main()
 
 int BuildHeap(int *heap, int size)
 {
-	int i = 2;
-	while(i <= size)
+	int i = 1;
+	while(i < size)
 	{
 		Reheap_up(heap, i);
 		i += 1;
@@ -68,7 +68,7 @@ int Reheap_up(int *heap, int i)
 {
 	if(i != 0)
 	{
-		int p = i % 2;
+		int p = (i - 1) % 2;
 
 		if((p > 0) && (heap[i] < heap[p]))
 		{
