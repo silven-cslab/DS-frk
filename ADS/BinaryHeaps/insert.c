@@ -68,9 +68,9 @@ int Reheap_up(int *heap, int i)
 {
 	if(i != 0)
 	{
-		int p = (i - 1) % 2;
+		int p = (i - 1) / 2;
 
-		if((p > 0) && (heap[i] < heap[p]))
+		if(heap[i] < heap[p])
 		{
 			swap((heap + i), (heap + p));
 			Reheap_up(heap, p);
