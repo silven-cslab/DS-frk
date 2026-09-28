@@ -6,7 +6,7 @@
  * Then, takes all of the values of the vertices of the graph.
  * Then associates edges between specified pair of vertices.
  * Prints the adjacency list.
- * Performs Breadth First Search on the graph and prints the output.
+ * Performs Depth First Search on the graph and prints the output.
 */
 
 
@@ -34,9 +34,9 @@ struct graph {
 struct graph *insertVertex(struct graph *, int);
 struct graph *insertEdge(int, int, struct graph *);
 int printadjList(struct graph *);
-void BFS(struct graph *);
-void enqueue(struct node **, struct node **, int);
-int dequeue(struct node **, struct node **);
+void DFS(struct graph *);
+void push(struct node **, int);
+int pop(struct node **);
 void destroyGraph(struct graph *);
 
 
@@ -79,7 +79,7 @@ int main()
 
 	if(printadjList(G))	return 1;
 
-	BFS(G);
+	DFS(G);
 
 	destroyGraph(G);
 
@@ -195,67 +195,59 @@ int printadjList(struct graph *G)
 }
 
 
-void BFS(struct graph *G)
+
+void DFS(struct graph *G)
 {
     if(G == NULL)
     {
-        printf("\nGraph is empty!!\n\n");
+        printf("\nGraph is empty: Depth first search is not possible\n\n");
         return;
     }
 
-    struct node *QFRONT = NULL;
-    struct node *QREAR = NULL;
-
-    int VISIT[G->V];
+    struct node *STACK = NULL;
     int visited[G->V];
-
-    int i, count = 0;
-    int V, index;
+    int i, V, index;
 
     for(i = 0; i < G->V; i++)
     {
         visited[i] = 0;
     }
 
-    /* Start BFS from the first vertex */
-    enqueue(&QFRONT, &QREAR, G->vertices[0]);
+    push(&STACK, G->vertices[0]);
+    printf("\n===== Depth First Search =====\n");
 
-    index = search(G->vertices, G->vertices[0], G->V);
-    visited[index] = 1;
+    printf("DFS : ");
 
-    printf("\n===== Breadth First Search =====\n");
-    printf("BFS : ");
-
-    while(QFRONT != NULL)
+    while(STACK != NULL)
     {
-        V = dequeue(&QFRONT, &QREAR);
-
-        VISIT[count++] = V;
-        printf("[%d] ", V);
-
+        V = pop(&STACK);
         index = search(G->vertices, V, G->V);
 
-        if(index != -1)
+        if(index == -1)
+            continue;
+
+        if(visited[index] == 1)
+            continue;
+
+        visited[index] = 1;
+        printf("[%d] ", V);
+        struct node *ptr = G->adjList[index]->next;
+
+        while(ptr != NULL)
         {
-            struct node *temp = G->adjList[index]->next;
+            int adjIndex;
+            adjIndex = search(G->vertices, ptr->data, G->V);
 
-            while(temp != NULL)
+            if(adjIndex != -1 && visited[adjIndex] == 0)
             {
-                int adjIndex = search(G->vertices, temp->data, G->V);
-
-                if(adjIndex != -1 && visited[adjIndex] == 0)
-                {
-                    visited[adjIndex] = 1;
-                    enqueue(&QFRONT, &QREAR, temp->data);
-                }
-
-                temp = temp->next;
+                push(&STACK, ptr->data);
             }
+            ptr = ptr->next;
         }
     }
-
     printf("\n================================\n\n");
 }
+
 
 
 struct node *createNode(int val)
@@ -304,46 +296,31 @@ struct node *insert_SL_end(int V, struct node *adjList)
 }
 
 
-void enqueue(struct node **front, struct node **rear, int V)
+void push(struct node **top, int V)
 {
     struct node *newNode = createNode(V);
 
     if(newNode == NULL)
-    {
         return;
-    }
 
-    if(*front == NULL)
-    {
-        *front = newNode;
-        *rear = newNode;
-        return;
-    }
-
-    (*rear)->next = newNode;
-    *rear = newNode;
+    newNode->next = *top;
+    *top = newNode;
 }
 
 
-int dequeue(struct node **front, struct node **rear)
+int pop(struct node **top)
 {
-    if(*front == NULL)
+    if(*top == NULL)
     {
-        printf("\nQueue is empty!!\n");
+        printf("\nStack is empty!!\n");
+
         return -1;
     }
 
-    struct node *temp = *front;
+    struct node *temp = *top;
     int V = temp->data;
 
-    *front = (*front)->next;
-
-    /* Queue became empty */
-    if(*front == NULL)
-    {
-        *rear = NULL;
-    }
-
+    *top = (*top)->next;
     free(temp);
 
     return V;
