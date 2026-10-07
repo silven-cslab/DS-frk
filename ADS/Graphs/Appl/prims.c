@@ -9,8 +9,9 @@
 #include<stdio.h>	//For Basic I/O functions.
 #include<stdlib.h>		//For DMA functions like malloc(), free(),...
 #include<stdbool.h>	//For boolean data types....
+#include<limits.h>		//For INT_MAX.
 
-#define INFINITY 9999
+#define INFINITY INT_MAX
 
 
 //Global Declarations:
@@ -189,49 +190,23 @@ void destroyGraph(Graph *G)
 }
 
 
-
-int indexV(Graph *G, int src)
-{
-	int i;
-
-	for(i = 0;i<(G -> V);i++)
-	{
-		if(G -> vertices[i] == src)
-		{
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-
-int searchMin(int *d, bool *known, int size)
-{
-	int min = INFINITY, i, minIndex = -1;
-
-	for(i = 0;i<size;i++)
-	{
-		if(!known[i] && d[i] < min)
-		{
-			min = d[i];
-			minIndex = i;
-		}
-	}
-
-	return minIndex;
-}
-
-
 void Prims(Graph *G)
 {	
 	int i, j, ne = 0, min, x, y, totalCost = 0;
+
+	if(G == NULL || G -> V == 0)
+	{
+		printf("\nGraph is empty!!\n\n");
+		return;
+	}
+
 	bool known[G->V];
 	int TREE[G -> V][G -> V], d[G -> V];
 
 	for(i = 0;i < (G -> V); i++)
 	{
 		known[i] = false;
+		d[i] = INFINITY;
 	}
 
 	for(i =0;i<(G -> V);i++)
@@ -239,6 +214,7 @@ void Prims(Graph *G)
 		for(j=0;j<(G -> V);j++)
 		{
 			TREE[i][j] = 0;
+			TREE[j][i] = 0;
 		}
 	}
 	
@@ -246,18 +222,19 @@ void Prims(Graph *G)
 	d[0] = 0;
 
 	printf("\n\n ===== Minimum Spanning Tree =====\n");
-	while(ne < (G -> V))
+	while(ne < (G -> V - 1))
 	{
 		min = INFINITY;
 		for(i=0;i<(G -> V);i++)
-		{
+		{	
+//			x = -1, y = -1;
 			if(known[i])
 			{
 				for(j = 0;j<(G -> V);j++)
 				{
 					if(!known[j])
 					{
-						if(G -> adjMatrix[i][j] < min)
+						if(G -> adjMatrix[i][j] != 0 && G -> adjMatrix[i][j] < min)
 						{
 							min = G -> adjMatrix[i][j];
 							x = i;
@@ -268,17 +245,23 @@ void Prims(Graph *G)
 			}
 		}
 
+		if(x == -1 || y == -1)
+		{
+			printf("\nGraph is disconnected. Can't construct MST!!\n\n");
+			return;
+		}
+
 		TREE[x][y] = 1;
+		TREE[y][x] = 1;
 		known[y] = true;
 		d[y] = min;
 		ne += 1;
 
 		totalCost += min;
-		printf("%d ------- %d >>> Cost = %d\n", G -> vertices[x], G -> vertices[y], totalCost);
+		printf("%d ------- %d >>> Cost = %d\n", G -> vertices[x], G -> vertices[y], min);
 	}
 	printf(" ==================================\n");
 	printf("Total Cost of the MST: %d", totalCost);
-
 }
 
 
