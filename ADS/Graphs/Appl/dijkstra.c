@@ -44,7 +44,7 @@ Graph *insertVertex(Graph *G, int V)
 
 
 	//Increase the size for the new row pointer:
-	int **tempMatrix = realloc(G -> adjMatrix, (G -> V + 1) * sizeof(int));
+	int **tempMatrix = realloc(G -> adjMatrix, (G -> V + 1) * sizeof(int *));
 
 	if(tempMatrix == NULL)
 	{
@@ -199,7 +199,7 @@ int indexV(Graph *G, int src)
 	{
 		if(G -> vertices[i] == src)
 		{
-			return src;
+			return i;
 		}
 	}
 
@@ -209,11 +209,11 @@ int indexV(Graph *G, int src)
 
 int searchMin(int *d, bool *known, int size)
 {
-	int min = -1, i, minIndex;
+	int min = INFINITY, i, minIndex = -1;
 
 	for(i = 0;i<size;i++)
 	{
-		if(known[i] == false && d[i] < min)
+		if(!known[i] && d[i] < min)
 		{
 			min = d[i];
 			minIndex = i;
@@ -271,7 +271,7 @@ int Dijkstra(Graph *G, int src)
 
 		for(i = 0;i < (G -> V);i++)
 		{
-			if((known[i] = false) && (G -> adjMatrix[j][i] != 0))
+			if((known[i] == false) && (G -> adjMatrix[j][i] != 0))
 			{
 				if(d[j] + G -> adjMatrix[j][i] < d[i]) 
 				{	
@@ -296,7 +296,7 @@ int Dijkstra(Graph *G, int src)
 
 		for(i = 0;i< (G -> V);i++)
 		{
-			if(known[i] = false)
+			if(known[i] == false)
 			{
 				complete = false;
 				break;

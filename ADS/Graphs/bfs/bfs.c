@@ -1,4 +1,4 @@
-/** Graph Implementation: Adjacency List Representation Breadth First Search(BFS) **/
+//Graph Implementation: Adjacency List Representation Breadth First Search(BFS) **/
 
 /*
  * This program shows the implementation of Graphs by using Adjacency List.
@@ -209,6 +209,7 @@ void BFS(struct graph *G)
     int VISIT[G->V];
     int visited[G->V];
 
+<<<<<<< Updated upstream
     int i, count = 0;
     int V, index;
 
@@ -255,6 +256,10 @@ void BFS(struct graph *G)
     }
 
     printf("\n================================\n\n");
+=======
+	struct node *Q = NULL;
+	 
+>>>>>>> Stashed changes
 }
 
 
