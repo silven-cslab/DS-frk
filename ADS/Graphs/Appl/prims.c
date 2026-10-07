@@ -1,9 +1,8 @@
-/** Dijkstra Algorithm Implementation **/
+/** Prims Algorithm Implementation **/
 
 /*
  * This program shows the implementation of insertion opertions on graphs for graph creation.
- * Then, prompts the user for a source vertex.
- * Then, based on the dijkstra algorithm calculates the shortest distance from the source vertex to the every other vertex of the graph.
+ * This program then builds the Minimum Spanning Tree(MST) based on the Prim's Algorithm.
 */
 
 //Preprocessing Directives:
@@ -224,96 +223,62 @@ int searchMin(int *d, bool *known, int size)
 }
 
 
-int Dijkstra(Graph *G, int src)
+void Prims(Graph *G)
 {	
-	int i, j, k, path[G -> V], d[G -> V];
-	bool known[G -> V], complete;
-	int srci = indexV(G, src);
+	int i, j, ne = 0, min, x, y, totalCost = 0;
+	bool known[G->V];
+	int TREE[G -> V][G -> V], d[G -> V];
 
-	if(srci == -1)
-	{
-		printf("\nSource vertex doesn't exist in the graph!!\n\n");
-		return 1;
-	}
-
-	for(i = 0;i < (G -> V);i++)
+	for(i = 0;i < (G -> V); i++)
 	{
 		known[i] = false;
-		if(G -> adjMatrix[srci][i] != 0)
-		{
-			d[i] = G -> adjMatrix[srci][i];
-			path[i] = src;
-		}
-		else
-		{
-			d[i] = INFINITY;
-			path[i] = -1;
-		}
 	}
 
-	known[srci] = true;
-	d[srci] = 0;
-	path[srci] = src;
-	complete = false;
-
-	//print output tables:
-	printf("\nChose vertex: %d", src);
-	printf("\n+===============+=======+=======+=======+\n");
-	printf("| Vertex\t| Known\t| Path\t| d[i]\t|\n");
-	for(i = 0;i<(G -> V);i++)
+	for(i =0;i<(G -> V);i++)
 	{
-		printf("|    %d\t\t| %s\t| %d\t| %d\t|\n", G -> vertices[i], known[i] ? "True" : "False", path[i], d[i]);
-	}
-	printf("+===============+=======+=======+=======+\n");
-
-	while(!complete)
-	{
-		j = searchMin(&d[0], &known[0], G -> V);
-
-		if(j == -1)
+		for(j=0;j<(G -> V);j++)
 		{
-			break;
+			TREE[i][j] = 0;
 		}
+	}
+	
+	known[0] = true;
+	d[0] = 0;
 
-		known[j] = true;
-
-		for(i = 0;i < (G -> V);i++)
+	printf("\n\n ===== Minimum Spanning Tree =====\n");
+	while(ne < (G -> V))
+	{
+		min = INFINITY;
+		for(i=0;i<(G -> V);i++)
 		{
-			if((known[i] == false) && (G -> adjMatrix[j][i] != 0))
+			if(known[i])
 			{
-				if(d[j] + G -> adjMatrix[j][i] < d[i]) 
-				{	
-					d[i] = d[j] + G -> adjMatrix[j][i];
-					path[i] = j;
+				for(j = 0;j<(G -> V);j++)
+				{
+					if(!known[j])
+					{
+						if(G -> adjMatrix[i][j] < min)
+						{
+							min = G -> adjMatrix[i][j];
+							x = i;
+							y = j;
+						}
+					}
 				}
 			}
-
-
-			//print output tables:
-			printf("\nChose vertex: %d", G -> vertices[j]);
-			printf("\n+===============+=======+=======+=======+\n");
-			printf("| Vertex\t| Known\t| Path\t| d[i]\t|\n");
-			for(k = 0;k<(G -> V);k++)
-			{
-				printf("|    %d\t\t| %s\t| %d\t| %d\t|\n", G -> vertices[k], known[k] ? "True" : "False", path[k], d[k]);
-			}
-			printf("+===============+=======+=======+=======+\n");
-
 		}
 
-		complete = true;
+		TREE[x][y] = 1;
+		known[y] = true;
+		d[y] = min;
+		ne += 1;
 
-		for(i = 0;i< (G -> V);i++)
-		{
-			if(known[i] == false)
-			{
-				complete = false;
-				break;
-			}
-		}
+		totalCost += min;
+		printf("%d ------- %d >>> Cost = %d\n", G -> vertices[x], G -> vertices[y], totalCost);
 	}
+	printf(" ==================================\n");
+	printf("Total Cost of the MST: %d", totalCost);
 
-	return 0;
 }
 
 
@@ -331,7 +296,7 @@ void GraphMain()
 	do
 	{
 		printf("\n ===== Graph Implementation: Using Adjacency Matrix\n\n");
-		printf("\n1. Insert a vertex,\n2. Insert an edge,\n3. Show Adjacency Matrix,\n4. Shortest Paths,\n5. Exit.\n\n");
+		printf("\n1. Insert a vertex,\n2. Insert an edge,\n3. Show Adjacency Matrix,\n4. Construct MST & print it's cost,\n5. Exit.\n\n");
 		printf("Choose: ");
 		
 		scanf("%d", &choice);
@@ -357,10 +322,7 @@ void GraphMain()
 				break;
 
 			case 4:
-				printf("\nEnter the source vertex: ");
-				scanf("%d", &src);
-
-				if(Dijkstra(G, src))  return;
+				Prims(G);
 				break;	
 
 			case 5:
